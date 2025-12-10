@@ -102,7 +102,7 @@ main {
 #menuBurger {
     position: fixed;
     top: 100px;
-    left: 20px;
+    right: 20px;
     z-index: 1000;
 }
 
