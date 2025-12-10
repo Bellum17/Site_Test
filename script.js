@@ -1,15 +1,15 @@
 // --- 1. Initialisation de la carte ---
 // Carte centrée sur la région 39 (Nord de l'Égypte - Delta du Nil)
-// Définition des limites strictes de la région 39
-var southWest = L.latLng(29.5, 29.5);  // Coin sud-ouest
-var northEast = L.latLng(31.8, 33.0);  // Coin nord-est
+// Définition des limites pour toute l'Égypte
+var southWest = L.latLng(22.0, 25.0);  // Coin sud-ouest (frontière soudanaise)
+var northEast = L.latLng(31.8, 35.0);  // Coin nord-est (Sinaï)
 var bounds = L.latLngBounds(southWest, northEast);
 
 // Initialisation de la carte avec restrictions
 var map = L.map('maCarte', {
     center: [30.5, 31.2],
     zoom: 9,
-    minZoom: 8,
+    minZoom: 6,
     maxZoom: 14,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0  // Empêche de sortir des limites
