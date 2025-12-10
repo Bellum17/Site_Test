@@ -34,9 +34,16 @@ var govIcon = L.icon({
     popupAnchor: [0, -50]      // Position de la popup
 });
 
+// Groupe de calques pour les symboles gouvernementaux
+var gouvernementLayer = L.layerGroup();
+
 // Placement au Caire
-var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon}).addTo(map);
+var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
 caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
+gouvernementLayer.addLayer(caireGov);
+
+// Ajouter le groupe à la carte par défaut
+gouvernementLayer.addTo(map);
 
 
 // --- 4. Légende de la carte ---
@@ -50,3 +57,23 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
+
+
+// --- 5. Menu Burger et Filtres ---
+const burgerBtn = document.getElementById('burgerBtn');
+const menuContent = document.getElementById('menuContent');
+const filterGouvernement = document.getElementById('filterGouvernement');
+
+// Toggle du menu burger
+burgerBtn.addEventListener('click', function() {
+    menuContent.classList.toggle('menu-hidden');
+});
+
+// Filtre pour les symboles gouvernementaux
+filterGouvernement.addEventListener('change', function() {
+    if (this.checked) {
+        gouvernementLayer.addTo(map);
+    } else {
+        map.removeLayer(gouvernementLayer);
+    }
+});
