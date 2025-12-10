@@ -1,56 +1,52 @@
 // --- 1. Initialisation de la carte ---
-// On cible la div avec l'id 'maCarte'
-// Coordonnées approximatives du centre de l'Égypte [Latitude, Longitude] et niveau de zoom (6)
-var map = L.map('maCarte').setView([26.8206, 30.8025], 6);
+// Carte centrée sur la région 39 (Nord de l'Égypte - Delta du Nil)
+// Définition des limites strictes de la région 39
+var southWest = L.latLng(29.5, 29.5);  // Coin sud-ouest
+var northEast = L.latLng(31.8, 33.0);  // Coin nord-est
+var bounds = L.latLngBounds(southWest, northEast);
+
+// Initialisation de la carte avec restrictions
+var map = L.map('maCarte', {
+    center: [30.5, 31.2],
+    zoom: 9,
+    minZoom: 8,
+    maxZoom: 14,
+    maxBounds: bounds,
+    maxBoundsViscosity: 1.0  // Empêche de sortir des limites
+}).setView([30.5, 31.2], 9);
 
 
 // --- 2. Ajout du fond de carte (Tiles) ---
 // Nous utilisons OpenStreetMap (gratuit)
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    maxZoom: 14,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
 
-// --- 3. Ajout d'éléments variés ---
+// --- 3. Icônes personnalisées ---
 
-// ELEMENT A : Un marqueur classique (Le Caire)
-var caireMarker = L.marker([30.0444, 31.2357]).addTo(map);
-// On ajoute une popup qui s'ouvre au clic
-caireMarker.bindPopup("<b>Le Caire</b><br>Capitale de l'Égypte.");
+// Icône de gouvernement (GOV)
+var govIcon = L.icon({
+    iconUrl: 'images/icon_gov_rdn.png',
+    iconSize: [40, 40],        // Taille de l'icône
+    iconAnchor: [20, 40],      // Point d'ancrage (centré en bas)
+    popupAnchor: [0, -40]      // Position de la popup
+});
 
-
-// ELEMENT B : Un cercle (Zone des Pyramides de Gizeh)
-// Le cercle est défini par son centre, son rayon en mètres, et sa couleur
-var gizaCircle = L.circle([29.9792, 31.1342], {
-    color: '#d4af37', // Couleur or pour le contour
-    fillColor: '#d4af37', // Couleur de remplissage
-    fillOpacity: 0.5,     // Transparence
-    radius: 5000          // Rayon de 5km autour des pyramides
-}).addTo(map);
-gizaCircle.bindPopup("<b>Nécropole de Gizeh</b><br>Zone des grandes pyramides.");
+// Placement au Caire
+var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon}).addTo(map);
+caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
 
 
-// ELEMENT C : Un polygone (Le Delta du Nil - forme approximative)
-// Un polygone est une série de points reliés entre eux
-var deltaPolygon = L.polygon([
-    [31.25, 29.9], // Point Nord-Ouest (Alexandrie approx)
-    [31.3, 32.3],  // Point Nord-Est (Port-Saïd approx)
-    [30.1, 31.2]   // Point Sud (Pointe du delta près du Caire)
-], {
-    color: 'green',
-    fillColor: '#aaddaa',
-    fillOpacity: 0.4
-}).addTo(map);
-deltaPolygon.bindPopup("<b>Delta du Nil</b><br>Zone agricole fertile.");
+// --- 4. Légende de la carte ---
+var legend = L.control({position: 'bottomright'});
 
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = '<h4>Légende</h4>';
+    div.innerHTML += '<div class="legend-item"><span class="legend-color" style="background-color: #87CEEB;"></span> Gouvernement</div>';
+    return div;
+};
 
-// ELEMENT D : Un marqueur circulaire (Vallée des Rois / Louxor)
-// Similaire à un cercle, mais sa taille reste fixe quel que soit le zoom
-var luxorMarker = L.circleMarker([25.7402, 32.6014], {
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.8,
-    radius: 10 // Taille fixe en pixels
-}).addTo(map);
-luxorMarker.bindPopup("<b>Louxor & Vallée des Rois</b><br>Haut lieu archéologique.");
+legend.addTo(map);
