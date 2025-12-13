@@ -1,23 +1,7 @@
 // --- 1. Initialisation de la carte ---
 // Carte centrée sur la région 39 (Nord de l'Égypte - Delta du Nil)
 // Définition des limites pour toute l'Égypte
-var s        // Create custom icon (NATO style)
-        const unitIcon = L.divIcon({
-            className: 'military-unit-marker',
-            html: `<div style="
-                background: rgba(0, 0, 0, 0.8);
-                border: 3px solid #00ff00;
-                width: 50px;
-                height: 50px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
-                position: relative;
-            ">${symbolIcon}</div>`,
-            iconSize: [50, 50],
-            iconAnchor: [25, 25]
-        });g(22.0, 25.0);  // Coin sud-ouest (frontière soudanaise)
+var southWest = L.latLng(22.0, 25.0);  // Coin sud-ouest (frontière soudanaise)
 var northEast = L.latLng(31.8, 35.0);  // Coin nord-est (Sinaï)
 var bounds = L.latLngBounds(southWest, northEast);
 
@@ -79,6 +63,7 @@ legend.addTo(map);
 const burgerBtn = document.getElementById('burgerBtn');
 const menuContent = document.getElementById('menuContent');
 const filterGouvernement = document.getElementById('filterGouvernement');
+const filterArmees = document.getElementById('filterArmees');
 
 // Toggle du menu burger
 burgerBtn.addEventListener('click', function() {
@@ -95,178 +80,134 @@ filterGouvernement.addEventListener('change', function() {
 });
 
 
-// --- 6. Unités Militaires ---
+// --- 6. Système de placement d'unités militaires ---
+
 // Groupe de calques pour les unités militaires
-const armyUnits = L.layerGroup().addTo(map);
-let selectedSymbol = null;
-let placementMode = false;
+var armyLayer = L.layerGroup().addTo(map);
+var placedUnits = [];
 
-// Toggle des symboles militaires
-function toggleArmySymbols() {
-    const armyFilter = document.getElementById('armyFilter');
-    if (armyFilter.checked) {
-        map.addLayer(armyUnits);
-    } else {
-        map.removeLayer(armyUnits);
-    }
-}
+// État du mode placement
+var placementMode = {
+    active: false,
+    unitType: null
+};
 
-// Sélectionner le symbole militaire
-function selectSymbol(symbolType) {
-    // Retirer la classe active de tous les boutons
-    document.querySelectorAll('.symbol-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Activer le bouton sélectionné
-    const selectedBtn = document.querySelector(`[data-symbol="${symbolType}"]`);
-    if (selectedBtn) {
-        selectedBtn.classList.add('active');
-    }
-    
-    selectedSymbol = symbolType;
-    placementMode = true;
-    
-    // Afficher les informations de placement
-    const placementInfo = document.getElementById('placementInfo');
-    placementInfo.style.display = 'block';
-    placementInfo.textContent = `Mode placement: ${getSymbolName(symbolType)} - Cliquez sur la carte`;
-    
-    // Changer le curseur
-    map.getContainer().style.cursor = 'crosshair';
-}
+// Définition des symboles d'unités (SVG NATO/APP-6 style)
+const unitSymbols = {
+    infantry: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><line x1="20" y1="10" x2="20" y2="30" stroke="#0f0" stroke-width="2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#0f0" stroke-width="2"/></svg>',
+    mechanized: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><line x1="20" y1="10" x2="20" y2="30" stroke="#0f0" stroke-width="2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#0f0" stroke-width="2"/><circle cx="20" cy="20" r="6" fill="none" stroke="#0f0" stroke-width="1.5"/></svg>',
+    motorized: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><line x1="20" y1="10" x2="20" y2="30" stroke="#0f0" stroke-width="2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#0f0" stroke-width="2"/><line x1="16" y1="16" x2="24" y2="24" stroke="#0f0" stroke-width="1.5"/></svg>',
+    armor: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><ellipse cx="20" cy="20" rx="8" ry="8" fill="none" stroke="#0f0" stroke-width="2"/></svg>',
+    recon: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><line x1="15" y1="15" x2="25" y2="25" stroke="#0f0" stroke-width="2"/><line x1="25" y1="15" x2="15" y2="25" stroke="#0f0" stroke-width="2"/></svg>',
+    artillery: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#0f0"/></svg>',
+    antiair: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#0f0"/><path d="M 20 13 L 17 17 L 23 17 Z" fill="#0f0"/></svg>',
+    missile: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><path d="M 20 12 L 20 28" stroke="#0f0" stroke-width="2"/><path d="M 16 16 L 20 12 L 24 16" fill="#0f0"/></svg>',
+    helicopter: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><path d="M 12 14 L 28 14" stroke="#0f0" stroke-width="2"/><ellipse cx="20" cy="22" rx="6" ry="4" fill="none" stroke="#0f0" stroke-width="1.5"/></svg>',
+    fighter: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><path d="M 20 14 L 20 26 M 14 20 L 26 20" stroke="#0f0" stroke-width="2"/></svg>',
+    hq: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><text x="20" y="26" text-anchor="middle" fill="#0f0" font-size="14" font-weight="bold">HQ</text></svg>',
+    supply: '<svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="rgba(0,255,0,0.2)" stroke="#0f0" stroke-width="2"/><rect x="16" y="16" width="8" height="8" fill="none" stroke="#0f0" stroke-width="1.5"/></svg>'
+};
 
-// Obtenir le nom du symbole
-function getSymbolName(type) {
-    const names = {
-        'infantry': 'Infanterie',
-        'armor': 'Blindés',
-        'artillery': 'Artillerie',
-        'airforce': 'Aviation',
-        'navy': 'Marine',
-        'special': 'Forces Spéciales',
-        'hq': 'Quartier Général',
-        'logistics': 'Logistique',
-        'medical': 'Médical'
-    };
-    return names[type] || type;
-}
+// Noms des unités pour les popups
+const unitNames = {
+    infantry: 'Infanterie',
+    mechanized: 'Infanterie Mécanisée',
+    motorized: 'Infanterie Motorisée',
+    armor: 'Chars de Combat',
+    recon: 'Reconnaissance',
+    artillery: 'Artillerie',
+    antiair: 'Défense Anti-Aérienne',
+    missile: 'Unité de Missiles',
+    helicopter: 'Hélicoptères',
+    fighter: 'Aviation de Chasse',
+    hq: 'Quartier Général',
+    supply: 'Logistique'
+};
 
-// Get symbol icon (NATO style)
-function getSymbolIcon(type) {
-    const icons = {
-        'infantry': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <rect x="5" y="5" width="20" height="20" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <line x1="10" y1="15" x2="20" y2="15" stroke="#00ff00" stroke-width="2"/>
-        </svg>`,
-        'armor': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <circle cx="15" cy="15" r="10" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <circle cx="15" cy="15" r="3" fill="#00ff00"/>
-        </svg>`,
-        'artillery': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <circle cx="15" cy="15" r="10" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <circle cx="15" cy="10" r="2" fill="#00ff00"/>
-            <circle cx="10" cy="18" r="2" fill="#00ff00"/>
-            <circle cx="20" cy="18" r="2" fill="#00ff00"/>
-        </svg>`,
-        'airforce': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <path d="M15,8 L10,20 L15,18 L20,20 Z" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <line x1="8" y1="14" x2="22" y2="14" stroke="#00ff00" stroke-width="2"/>
-        </svg>`,
-        'navy': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <path d="M8,18 L15,10 L22,18" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <line x1="8" y1="18" x2="22" y2="18" stroke="#00ff00" stroke-width="2"/>
-        </svg>`,
-        'special': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <polygon points="15,5 18,12 25,12 20,17 22,24 15,19 8,24 10,17 5,12 12,12" fill="none" stroke="#00ff00" stroke-width="2"/>
-        </svg>`,
-        'hq': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <rect x="8" y="8" width="14" height="14" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <line x1="8" y1="15" x2="22" y2="15" stroke="#00ff00" stroke-width="2"/>
-            <line x1="15" y1="8" x2="15" y2="22" stroke="#00ff00" stroke-width="2"/>
-        </svg>`,
-        'logistics': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <rect x="8" y="10" width="14" height="10" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <line x1="12" y1="10" x2="12" y2="20" stroke="#00ff00" stroke-width="2"/>
-            <line x1="18" y1="10" x2="18" y2="20" stroke="#00ff00" stroke-width="2"/>
-        </svg>`,
-        'medical': `<svg width="30" height="30" viewBox="0 0 30 30">
-            <circle cx="15" cy="15" r="10" fill="none" stroke="#00ff00" stroke-width="2"/>
-            <line x1="15" y1="10" x2="15" y2="20" stroke="#00ff00" stroke-width="2"/>
-            <line x1="10" y1="15" x2="20" y2="15" stroke="#00ff00" stroke-width="2"/>
-        </svg>`
-    };
-    return icons[type] || '📍';
-}
-
-// Placer une unité au clic sur la carte
-map.on('click', function(e) {
-    if (placementMode && selectedSymbol) {
-        const symbolIcon = getSymbolIcon(selectedSymbol);
-        const symbolName = getSymbolName(selectedSymbol);
+// Sélection d'une unité
+document.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const unitType = this.getAttribute('data-unit');
         
-        // Créer une icône personnalisée
+        // Désactiver tous les boutons
+        document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+        
+        // Activer le mode placement
+        if (placementMode.unitType === unitType && placementMode.active) {
+            // Désactiver si on reclique sur la même unité
+            placementMode.active = false;
+            placementMode.unitType = null;
+            document.body.classList.remove('placing-mode');
+            document.getElementById('placementMode').querySelector('span').textContent = 'Sélection';
+        } else {
+            // Activer le nouveau mode
+            placementMode.active = true;
+            placementMode.unitType = unitType;
+            this.classList.add('active');
+            document.body.classList.add('placing-mode');
+            document.getElementById('placementMode').querySelector('span').textContent = unitNames[unitType];
+        }
+    });
+});
+
+// Placement d'unité sur la carte
+map.on('click', function(e) {
+    if (placementMode.active && placementMode.unitType) {
+        const unitType = placementMode.unitType;
+        
+        // Créer l'icône personnalisée
         const unitIcon = L.divIcon({
-            className: 'military-unit-marker',
-            html: `<div style="
-                background: rgba(0, 255, 0, 0.2);
-                border: 2px solid #00ff00;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 24px;
-                box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-            ">${symbolIcon}</div>`,
+            html: unitSymbols[unitType],
+            className: 'military-unit-icon',
             iconSize: [40, 40],
             iconAnchor: [20, 20]
         });
         
         // Créer le marqueur
-        const marker = L.marker(e.latlng, { icon: unitIcon })
-            .bindPopup(`
-                <div style="text-align: center;">
-                    <strong style="color: #00ff00;">${symbolName}</strong><br>
-                    <small>Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}</small><br>
-                    <button onclick="removeUnit(this)" style="
-                        margin-top: 5px;
-                        background: #ff0000;
-                        color: white;
-                        border: none;
-                        padding: 5px 10px;
-                        border-radius: 3px;
-                        cursor: pointer;
-                    ">Supprimer</button>
-                </div>
-            `);
-        
-        // Stocker la référence du marqueur pour suppression
-        marker.unitId = Date.now();
-        marker.addTo(armyUnits);
-        
-        // Réinitialiser le mode de placement
-        placementMode = false;
-        selectedSymbol = null;
-        map.getContainer().style.cursor = '';
-        
-        // Masquer les informations de placement
-        document.getElementById('placementInfo').style.display = 'none';
-        
-        // Retirer la classe active des boutons
-        document.querySelectorAll('.symbol-btn').forEach(btn => {
-            btn.classList.remove('active');
+        const marker = L.marker(e.latlng, {
+            icon: unitIcon,
+            draggable: true
         });
+        
+        // Ajouter popup
+        marker.bindPopup(`
+            <div style="text-align: center;">
+                <b style="color: #0f0;">${unitNames[unitType]}</b><br>
+                <small>Position: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}</small><br>
+                <button onclick="removeUnit(${placedUnits.length})" style="margin-top: 10px; background: #f00; color: #fff; border: none; padding: 5px 10px; cursor: pointer;">Supprimer</button>
+            </div>
+        `);
+        
+        // Ajouter à la carte
+        marker.addTo(armyLayer);
+        placedUnits.push(marker);
+        
+        console.log(`Unité placée: ${unitNames[unitType]} à [${e.latlng.lat}, ${e.latlng.lng}]`);
     }
 });
 
-// Fonction de suppression d'une unité
-function removeUnit(button) {
-    // Fermer tous les popups et trouver le marqueur à supprimer
-    map.eachLayer(function(layer) {
-        if (layer instanceof L.Marker && layer.getPopup() && layer.getPopup().isOpen()) {
-            armyUnits.removeLayer(layer);
-        }
-    });
-}
+// Fonction pour supprimer une unité
+window.removeUnit = function(index) {
+    if (placedUnits[index]) {
+        armyLayer.removeLayer(placedUnits[index]);
+        placedUnits[index] = null;
+    }
+};
+
+// Effacer toutes les unités
+document.getElementById('clearUnits').addEventListener('click', function() {
+    if (confirm('Voulez-vous vraiment effacer toutes les unités ?')) {
+        armyLayer.clearLayers();
+        placedUnits = [];
+        console.log('Toutes les unités ont été effacées');
+    }
+});
+
+// Filtre pour les unités militaires
+filterArmees.addEventListener('change', function() {
+    if (this.checked) {
+        armyLayer.addTo(map);
+    } else {
+        map.removeLayer(armyLayer);
+    }
+});

@@ -58,24 +58,20 @@ main {
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
     background-color: #000 !important;
     color: #0f0 !important;
-    border: 1px solid #0f0 !important;
-    border-radius: 0 !important;
-    box-shadow: 0 0 10px #0f0 !important;
 }
 
-/* Légende de la carte */
-.legend {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.9);
-    padding: 15px;
-    border: 2px solid #00ff00;
-    border-radius: 5px;
-    color: #00ff00;
-    font-family: 'Courier New', monospace;
-    z-index: 999;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #00ff00;
+    margin-right: 10px;
+    background-color: #000;
+    border: 2px solid #0f0;
+    padding: 10px 15px;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.8;
 }
 
 .legend h4 {
@@ -172,105 +168,163 @@ main {
     color: #0ff;
 }
 
-.filter-section {
-    margin-bottom: 20px;
+/* Sections du menu */
+.menu-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
     border-bottom: 1px solid rgba(0, 255, 0, 0.3);
-    padding-bottom: 15px;
 }
 
-.filter-section:last-child {
-    border-bottom: none;
-}
-
-.filter-section h4 {
-    color: #00ff00;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-/* Military symbols grid */
-.military-symbols {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.symbol-btn {
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid #00ff00;
-    color: #00ff00;
-    padding: 8px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    position: relative;
-}
-
-.symbol-btn:hover {
-    background: rgba(0, 255, 0, 0.2);
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-    border-color: #00ff00;
-}
-
-.symbol-btn.active {
-    background: rgba(0, 255, 0, 0.3);
-    border-color: #00ff00;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
-}
-
-.symbol-btn .nato-icon {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #00ff00;
-    background: rgba(0, 255, 0, 0.1);
-    position: relative;
-}
-
-.symbol-btn span {
-    font-size: 9px;
+.menu-section h4 {
+    color: #0f0;
+    font-size: 16px;
+    margin-bottom: 15px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 2px;
+    border-bottom: 2px solid #0f0;
+    padding-bottom: 8px;
 }
 
-.placement-mode-info {
-    background: rgba(0, 255, 0, 0.2);
-    color: #00ff00;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 10px;
-    text-align: center;
-    font-size: 12px;
-    border: 1px solid #00ff00;
-}
-
-/* Custom scrollbar for burger menu */
-.burger-content {
-    max-height: 600px;
+/* Sélecteur d'unités */
+#unitSelector {
+    max-height: 400px;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
-.burger-content::-webkit-scrollbar {
+#unitSelector::-webkit-scrollbar {
     width: 8px;
 }
 
-.burger-content::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.5);
+#unitSelector::-webkit-scrollbar-track {
+    background: #000;
+    border: 1px solid #0f0;
 }
 
-.burger-content::-webkit-scrollbar-thumb {
-    background: #00ff00;
+#unitSelector::-webkit-scrollbar-thumb {
+    background: #0f0;
     border-radius: 4px;
 }
 
-.burger-content::-webkit-scrollbar-thumb:hover {
-    background: #00cc00;
+.unit-category {
+    margin-bottom: 20px;
+}
+
+.unit-category h5 {
+    color: #0ff;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.unit-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.unit-btn {
+    background-color: #000;
+    border: 2px solid #0f0;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.unit-btn:hover {
+    background-color: #0f0;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    transform: scale(1.05);
+}
+
+.unit-btn.active {
+    background-color: #0f0;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+}
+
+.unit-btn svg {
+    width: 100%;
+    height: 40px;
+    display: block;
+}
+
+.unit-btn.active svg rect {
+    fill: rgba(0, 0, 0, 0.3);
+}
+
+/* Info placement */
+.placement-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid #0f0;
+    border-radius: 5px;
+}
+
+.placement-info p {
+    color: #0f0;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.placement-info span {
+    color: #0ff;
+    font-weight: bold;
+}
+
+.action-btn {
+    width: 100%;
+    background-color: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #0f0;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+/* Curseur de placement */
+.placing-mode {
+    cursor: crosshair !important;
+}
+
+.placing-mode * {
+    cursor: crosshair !important;
+}
+
+.placing-mode #map {
+    cursor: crosshair !important;
+}
+
+/* Icônes d'unités militaires sur la carte */
+.military-unit-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.military-unit-icon svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.6));
+    transition: all 0.3s ease;
+}
+
+.military-unit-icon:hover svg {
+    filter: drop-shadow(0 0 15px rgba(0, 255, 0, 1));
+    transform: scale(1.15);
 }
