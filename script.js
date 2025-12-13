@@ -1,7 +1,22 @@
 // --- 1. Initialisation de la carte ---
 // Carte centrée sur la région 39 (Nord de l'Égypte - Delta du Nil)
 // Définition des limites pour toute l'Égypte
-var southWest = L.latLng(22.0, 25.0);  // Coin sud-ouest (frontière soudanaise)
+var s        // Create custom icon (NATO style)
+        const unitIcon = L.divIcon({
+            className: 'military-unit-marker',
+            html: `<div style="
+                background: rgba(0, 0, 0, 0.9);
+                border: 3px solid #00ff00;
+                width: 45px;
+                height: 45px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+            ">${symbolIcon}</div>`,
+            iconSize: [45, 45],
+            iconAnchor: [22, 22]
+        });g(22.0, 25.0);  // Coin sud-ouest (frontière soudanaise)
 var northEast = L.latLng(31.8, 35.0);  // Coin nord-est (Sinaï)
 var bounds = L.latLngBounds(southWest, northEast);
 

@@ -59,39 +59,84 @@
                 <h4>⚔️ Placer des unités</h4>
                 <div class="military-symbols">
                     <button class="symbol-btn" onclick="selectSymbol('infantry')" data-symbol="infantry">
-                        🪖
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <rect x="5" y="5" width="20" height="20" fill="none" stroke="#00ff00" stroke-width="2"/>
+                                <line x1="10" y1="15" x2="20" y2="15" stroke="#00ff00" stroke-width="2"/>
+                                <line x1="15" y1="10" x2="15" y2="20" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>Infanterie</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('armor')" data-symbol="armor">
-                        🛡️
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <circle cx="15" cy="15" r="10" fill="none" stroke="#00ff00" stroke-width="2"/>
+                                <circle cx="15" cy="15" r="3" fill="#00ff00"/>
+                            </svg>
+                        </div>
                         <span>Blindés</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('artillery')" data-symbol="artillery">
-                        💣
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <circle cx="15" cy="15" r="10" fill="none" stroke="#00ff00" stroke-width="2"/>
+                                <circle cx="15" cy="15" r="2" fill="#00ff00"/>
+                                <line x1="15" y1="15" x2="22" y2="8" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>Artillerie</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('airforce')" data-symbol="airforce">
-                        ✈️
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <path d="M15 8 L22 22 L15 19 L8 22 Z" fill="none" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>Aviation</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('navy')" data-symbol="navy">
-                        ⚓
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <path d="M8 18 L15 10 L22 18 L15 22 Z" fill="none" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>Marine</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('special')" data-symbol="special">
-                        ⭐
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <polygon points="15,6 18,14 26,14 19,19 22,27 15,22 8,27 11,19 4,14 12,14" fill="none" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>Forces Sp.</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('hq')" data-symbol="hq">
-                        🏛️
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <rect x="7" y="7" width="16" height="16" fill="none" stroke="#00ff00" stroke-width="2"/>
+                                <rect x="10" y="10" width="10" height="10" fill="none" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>QG</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('logistics')" data-symbol="logistics">
-                        📦
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <rect x="8" y="10" width="14" height="10" fill="none" stroke="#00ff00" stroke-width="2"/>
+                                <line x1="12" y1="10" x2="12" y2="20" stroke="#00ff00" stroke-width="2"/>
+                                <line x1="18" y1="10" x2="18" y2="20" stroke="#00ff00" stroke-width="2"/>
+                            </svg>
+                        </div>
                         <span>Logistique</span>
                     </button>
                     <button class="symbol-btn" onclick="selectSymbol('medical')" data-symbol="medical">
-                        ⚕️
+                        <div class="nato-icon">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <line x1="15" y1="8" x2="15" y2="22" stroke="#00ff00" stroke-width="3"/>
+                                <line x1="8" y1="15" x2="22" y2="15" stroke="#00ff00" stroke-width="3"/>
+                            </svg>
+                        </div>
                         <span>Médical</span>
                     </button>
                 </div>
