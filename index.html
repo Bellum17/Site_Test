@@ -39,11 +39,11 @@
     <div id="menuBurger">
         <button id="burgerBtn">☰</button>
         <div id="menuContent" class="menu-hidden">
-            <h3>Filtres & Outils</h3>
+            <h3>Options de la carte</h3>
             
             <!-- Section Filtres -->
             <div class="menu-section">
-                <h4>Affichage</h4>
+                <h4>Filtres d'affichage</h4>
                 <label class="filter-option">
                     <input type="checkbox" id="filterGouvernement" checked>
                     <span>Symboles Gouvernementaux</span>
@@ -54,86 +54,78 @@
                 </label>
             </div>
             
-            <!-- Section Placement d'Armées -->
+            <!-- Section Placement d'Unités -->
             <div class="menu-section">
-                <h4>Placement d'Unités</h4>
-                <div id="unitSelector">
+                <h4>Placer des unités</h4>
+                <p class="instruction">Sélectionnez une unité puis cliquez sur la carte</p>
+                
+                <div class="unit-categories">
                     <!-- Infanterie -->
-                    <div class="unit-category">
-                        <h5>Infanterie</h5>
-                        <div class="unit-grid">
-                            <button class="unit-btn" data-unit="infantry" title="Infanterie">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><line x1="20" y1="10" x2="20" y2="30" stroke="#0f0" stroke-width="2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#0f0" stroke-width="2"/></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="mechanized" title="Infanterie Mécanisée">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><line x1="20" y1="10" x2="20" y2="30" stroke="#0f0" stroke-width="2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#0f0" stroke-width="2"/><circle cx="20" cy="20" r="6" fill="none" stroke="#0f0" stroke-width="1.5"/></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="motorized" title="Infanterie Motorisée">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><line x1="20" y1="10" x2="20" y2="30" stroke="#0f0" stroke-width="2"/><line x1="10" y1="20" x2="30" y2="20" stroke="#0f0" stroke-width="2"/><line x1="16" y1="16" x2="24" y2="24" stroke="#0f0" stroke-width="1.5"/></svg>
-                            </button>
-                        </div>
+                    <div class="category">
+                        <h5>⚔️ Infanterie</h5>
+                        <button class="unit-btn" data-unit="infantry" data-symbol="▣">
+                            <span class="unit-icon">▣</span> Infanterie
+                        </button>
+                        <button class="unit-btn" data-unit="mechanized" data-symbol="⊡">
+                            <span class="unit-icon">⊡</span> Mécanisée
+                        </button>
+                        <button class="unit-btn" data-unit="airborne" data-symbol="◈">
+                            <span class="unit-icon">◈</span> Aéroportée
+                        </button>
                     </div>
                     
                     <!-- Blindés -->
-                    <div class="unit-category">
-                        <h5>Blindés</h5>
-                        <div class="unit-grid">
-                            <button class="unit-btn" data-unit="armor" title="Chars de Combat">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><ellipse cx="20" cy="20" rx="8" ry="8" fill="none" stroke="#0f0" stroke-width="2"/></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="recon" title="Reconnaissance">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><line x1="15" y1="15" x2="25" y2="25" stroke="#0f0" stroke-width="2"/><line x1="25" y1="15" x2="15" y2="25" stroke="#0f0" stroke-width="2"/></svg>
-                            </button>
-                        </div>
+                    <div class="category">
+                        <h5>🛡️ Blindés</h5>
+                        <button class="unit-btn" data-unit="armor" data-symbol="◉">
+                            <span class="unit-icon">◉</span> Division Blindée
+                        </button>
+                        <button class="unit-btn" data-unit="tank" data-symbol="⬢">
+                            <span class="unit-icon">⬢</span> Bataillon de Chars
+                        </button>
                     </div>
                     
                     <!-- Artillerie -->
-                    <div class="unit-category">
-                        <h5>Artillerie & Support</h5>
-                        <div class="unit-grid">
-                            <button class="unit-btn" data-unit="artillery" title="Artillerie">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#0f0"/></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="antiair" title="Défense Anti-Aérienne">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#0f0"/><path d="M 20 13 L 17 17 L 23 17 Z" fill="#0f0"/></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="missile" title="Missiles">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><path d="M 20 12 L 20 28" stroke="#0f0" stroke-width="2"/><path d="M 16 16 L 20 12 L 24 16" fill="#0f0"/></svg>
-                            </button>
-                        </div>
+                    <div class="category">
+                        <h5>💥 Artillerie</h5>
+                        <button class="unit-btn" data-unit="artillery" data-symbol="◎">
+                            <span class="unit-icon">◎</span> Artillerie
+                        </button>
+                        <button class="unit-btn" data-unit="rocket" data-symbol="⬡">
+                            <span class="unit-icon">⬡</span> Lance-roquettes
+                        </button>
+                        <button class="unit-btn" data-unit="aa" data-symbol="◇">
+                            <span class="unit-icon">◇</span> DCA
+                        </button>
                     </div>
                     
-                    <!-- Aviation -->
-                    <div class="unit-category">
-                        <h5>Aviation</h5>
-                        <div class="unit-grid">
-                            <button class="unit-btn" data-unit="helicopter" title="Hélicoptères">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><path d="M 12 14 L 28 14" stroke="#0f0" stroke-width="2"/><ellipse cx="20" cy="22" rx="6" ry="4" fill="none" stroke="#0f0" stroke-width="1.5"/></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="fighter" title="Aviation de Chasse">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><path d="M 20 14 L 20 26 M 14 20 L 26 20" stroke="#0f0" stroke-width="2"/></svg>
-                            </button>
-                        </div>
+                    <!-- Support -->
+                    <div class="category">
+                        <h5>🔧 Support</h5>
+                        <button class="unit-btn" data-unit="logistics" data-symbol="◐">
+                            <span class="unit-icon">◐</span> Logistique
+                        </button>
+                        <button class="unit-btn" data-unit="engineering" data-symbol="◧">
+                            <span class="unit-icon">◧</span> Génie
+                        </button>
+                        <button class="unit-btn" data-unit="medical" data-symbol="✚">
+                            <span class="unit-icon">✚</span> Médical
+                        </button>
                     </div>
                     
                     <!-- Commandement -->
-                    <div class="unit-category">
-                        <h5>Commandement</h5>
-                        <div class="unit-grid">
-                            <button class="unit-btn" data-unit="hq" title="Quartier Général">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><text x="20" y="26" text-anchor="middle" fill="#0f0" font-size="14" font-weight="bold">HQ</text></svg>
-                            </button>
-                            <button class="unit-btn" data-unit="supply" title="Logistique">
-                                <svg viewBox="0 0 40 40"><rect x="10" y="10" width="20" height="20" fill="none" stroke="#0f0" stroke-width="2"/><rect x="16" y="16" width="8" height="8" fill="none" stroke="#0f0" stroke-width="1.5"/></svg>
-                            </button>
-                        </div>
+                    <div class="category">
+                        <h5>⭐ Commandement</h5>
+                        <button class="unit-btn" data-unit="hq" data-symbol="★">
+                            <span class="unit-icon">★</span> QG Principal
+                        </button>
+                        <button class="unit-btn" data-unit="command" data-symbol="☆">
+                            <span class="unit-icon">☆</span> Poste de Cdt
+                        </button>
                     </div>
                 </div>
                 
-                <div class="placement-info">
-                    <p id="placementMode">Mode: <span>Sélection</span></p>
-                    <button id="clearUnits" class="action-btn">Effacer Toutes les Unités</button>
-                </div>
+                <button id="clearUnits" class="clear-btn">🗑️ Effacer toutes les unités</button>
             </div>
         </div>
     </div>

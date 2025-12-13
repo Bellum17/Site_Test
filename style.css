@@ -129,15 +129,11 @@ main {
     padding: 15px;
     margin-top: 10px;
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-    min-width: 250px;
+    min-width: 320px;
     max-width: 400px;
     max-height: 80vh;
     overflow-y: auto;
     transition: all 0.3s ease;
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    z-index: 1001;
 }
 
 #menuContent.menu-hidden {
@@ -148,10 +144,33 @@ main {
     margin: 0 0 15px 0;
     color: #0f0;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 16px;
     border-bottom: 1px solid #0f0;
     padding-bottom: 8px;
     letter-spacing: 2px;
+}
+
+/* Sections du menu */
+.menu-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.menu-section h4 {
+    color: #0f0;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+}
+
+.instruction {
+    color: #0f0;
+    font-size: 11px;
+    margin-bottom: 15px;
+    opacity: 0.8;
+    font-style: italic;
 }
 
 .filter-option {
@@ -175,163 +194,80 @@ main {
     color: #0ff;
 }
 
-/* Sections du menu */
-.menu-section {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+/* Catégories d'unités */
+.unit-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.menu-section h4 {
+.category {
+    background: rgba(0, 255, 0, 0.05);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.category h5 {
     color: #0f0;
-    font-size: 16px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-bottom: 2px solid #0f0;
-    padding-bottom: 8px;
-}
-
-/* Sélecteur d'unités */
-#unitSelector {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-#unitSelector::-webkit-scrollbar {
-    width: 8px;
-}
-
-#unitSelector::-webkit-scrollbar-track {
-    background: #000;
-    border: 1px solid #0f0;
-}
-
-#unitSelector::-webkit-scrollbar-thumb {
-    background: #0f0;
-    border-radius: 4px;
-}
-
-.unit-category {
-    margin-bottom: 20px;
-}
-
-.unit-category h5 {
-    color: #0ff;
-    font-size: 13px;
-    margin-bottom: 10px;
+    font-size: 12px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.unit-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
+/* Boutons d'unités */
 .unit-btn {
+    width: 100%;
     background-color: #000;
-    border: 2px solid #0f0;
-    padding: 10px;
+    color: #0f0;
+    border: 1px solid #0f0;
+    padding: 8px 10px;
+    margin: 4px 0;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
+    font-size: 12px;
+    text-align: left;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .unit-btn:hover {
     background-color: #0f0;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-    transform: scale(1.05);
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
 
-.unit-btn.active {
+.unit-btn.selected {
     background-color: #0f0;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
 }
 
-.unit-btn svg {
-    width: 100%;
-    height: 40px;
-    display: block;
-}
-
-.unit-btn.active svg rect {
-    fill: rgba(0, 0, 0, 0.3);
-}
-
-/* Info placement */
-.placement-info {
-    margin-top: 20px;
-    padding: 15px;
-    background: rgba(0, 255, 0, 0.1);
-    border: 1px solid #0f0;
-    border-radius: 5px;
-}
-
-.placement-info p {
-    color: #0f0;
-    font-size: 13px;
-    margin-bottom: 10px;
-}
-
-.placement-info span {
-    color: #0ff;
+.unit-icon {
+    font-size: 16px;
     font-weight: bold;
 }
 
-.action-btn {
+/* Bouton effacer */
+.clear-btn {
     width: 100%;
     background-color: #000;
-    color: #0f0;
-    border: 2px solid #0f0;
+    color: #ff0000;
+    border: 2px solid #ff0000;
     padding: 10px;
+    margin-top: 15px;
     cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 12px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
 }
 
-.action-btn:hover {
-    background-color: #0f0;
+.clear-btn:hover {
+    background-color: #ff0000;
     color: #000;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-}
-
-/* Curseur de placement */
-.placing-mode {
-    cursor: crosshair !important;
-}
-
-.placing-mode * {
-    cursor: crosshair !important;
-}
-
-.placing-mode #map {
-    cursor: crosshair !important;
-}
-
-/* Icônes d'unités militaires sur la carte */
-.military-unit-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.military-unit-icon svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.6));
-    transition: all 0.3s ease;
-}
-
-.military-unit-icon:hover svg {
-    filter: drop-shadow(0 0 15px rgba(0, 255, 0, 1));
-    transform: scale(1.15);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }
