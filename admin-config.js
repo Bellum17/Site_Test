@@ -50,12 +50,38 @@ const ADMIN_CONFIG = {
     // Sauvegarder une version de la carte
     saveMapVersion: function(mapData, userId, username) {
         const versions = this.getMapVersions();
+        
+        // Si c'est la première sauvegarde et qu'il y a une carte publiée existante
+        if (versions.length === 0) {
+            const publishedMap = localStorage.getItem('published_map');
+            if (publishedMap) {
+                try {
+                    const oldMapData = JSON.parse(publishedMap);
+                    // Créer une version "avant" si elle n'existe pas déjà
+                    const oldVersion = {
+                        id: Date.now() - 1000, // ID légèrement antérieur
+                        mapData: oldMapData,
+                        savedBy: oldMapData.publishedBy || 'Système',
+                        userId: oldMapData.publishedById || 'system',
+                        timestamp: oldMapData.timestamp || new Date().toISOString(),
+                        isAutoSaved: true,
+                        note: 'Version précédente (sauvegarde automatique)'
+                    };
+                    versions.push(oldVersion);
+                } catch (error) {
+                    console.error('Erreur lors de la sauvegarde de l\'ancienne version:', error);
+                }
+            }
+        }
+        
+        // Ajouter la nouvelle version
         const version = {
             id: Date.now(),
             mapData: mapData,
             savedBy: username,
             userId: userId,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            isAutoSaved: false
         };
         versions.push(version);
         localStorage.setItem('map_versions', JSON.stringify(versions));

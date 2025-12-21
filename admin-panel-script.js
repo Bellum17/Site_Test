@@ -87,13 +87,23 @@ function loadVersions() {
         const card = document.createElement('div');
         card.className = 'version-card';
         
+        // Ajouter une classe spéciale pour les sauvegardes automatiques
+        if (version.isAutoSaved) {
+            card.classList.add('auto-saved');
+        }
+        
+        const unitsCount = version.mapData.units ? version.mapData.units.length : 0;
+        const autoSaveLabel = version.isAutoSaved ? '<span class="auto-save-badge">🤖 Auto</span>' : '';
+        const noteLabel = version.note ? `<div class="version-note">${version.note}</div>` : '';
+        
         card.innerHTML = `
             <div class="version-header">
-                <span class="version-id">Version #${version.id}</span>
+                <span class="version-id">Version #${version.id} ${autoSaveLabel}</span>
                 <span class="version-date">${formatDate(version.timestamp)}</span>
             </div>
+            ${noteLabel}
             <div class="version-info">👤 Par: ${version.savedBy}</div>
-            <div class="version-info">📍 Marqueurs: ${version.mapData.markers.length}</div>
+            <div class="version-info">⚔️ Unités: ${unitsCount}</div>
             <div class="version-info">🔍 Zoom: ${version.mapData.zoom}</div>
             <div class="version-actions">
                 <button class="version-btn" onclick="viewVersion(${version.id})">Voir</button>
@@ -138,11 +148,12 @@ function formatDate(dateString) {
 function viewVersion(versionId) {
     const mapData = ADMIN_CONFIG.restoreMapVersion(versionId);
     if (mapData) {
+        const unitsCount = mapData.units ? mapData.units.length : 0;
         const info = `
 Version #${versionId}
 Publié par: ${mapData.publishedBy || 'Inconnu'}
 Date: ${formatDate(mapData.timestamp)}
-Marqueurs: ${mapData.markers.length}
+Unités: ${unitsCount}
 Centre: ${mapData.center.lat.toFixed(4)}, ${mapData.center.lng.toFixed(4)}
 Zoom: ${mapData.zoom}
         `;

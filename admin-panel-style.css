@@ -121,9 +121,19 @@
     cursor: pointer;
 }
 
+.version-card.auto-saved {
+    border-color: #0af;
+    border-style: dashed;
+}
+
 .version-card:hover {
     background-color: rgba(0, 255, 0, 0.1);
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.version-card.auto-saved:hover {
+    background-color: rgba(0, 170, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
 }
 
 .version-header {
@@ -137,6 +147,30 @@
     color: #0f0;
     font-weight: bold;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.auto-save-badge {
+    display: inline-block;
+    background-color: rgba(0, 170, 255, 0.2);
+    border: 1px solid #0af;
+    color: #0af;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+.version-note {
+    color: #0af;
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: 8px;
+    padding: 5px;
+    background-color: rgba(0, 170, 255, 0.1);
+    border-left: 3px solid #0af;
 }
 
 .version-date {

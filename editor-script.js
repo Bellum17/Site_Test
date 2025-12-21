@@ -262,6 +262,9 @@ function resetMeasure() {
     document.getElementById('maCarte').style.cursor = '';
     measureInfo.classList.remove('visible');
     
+    // Réactiver le dragging de la carte
+    map.dragging.enable();
+    
     // Supprimer la ligne et les marqueurs
     if (measureLine) {
         map.removeLayer(measureLine);
@@ -292,17 +295,22 @@ measureBtn.addEventListener('click', () => {
     coordMode = false;
     coordBtn.classList.remove('active');
     hideCoordDisplay();
+    resetCoordMarkers();
     unitItems.forEach(i => i.classList.remove('selected'));
     closeAllMenus();
     
     if (measureMode) {
         resetMeasure();
+        // Réactiver le dragging de la carte
+        map.dragging.enable();
     } else {
         measureMode = true;
         measureBtn.classList.add('active');
         document.getElementById('maCarte').style.cursor = 'crosshair';
         measureInfo.classList.add('visible');
         measureInfo.innerHTML = 'Distance: 0 km<div class="hint">Maintenez le clic pour tracer. Recliquez pour terminer.</div>';
+        // Désactiver le dragging de la carte
+        map.dragging.disable();
     }
 });
 
@@ -320,6 +328,7 @@ coordBtn.addEventListener('click', () => {
         coordBtn.classList.remove('active');
         document.getElementById('maCarte').style.cursor = '';
         hideCoordDisplay();
+        resetCoordMarkers();
     } else {
         coordMode = true;
         coordBtn.classList.add('active');
@@ -587,6 +596,12 @@ document.getElementById('downloadPng').addEventListener('click', function() {
     this.innerHTML = '<span>⏳</span> Génération en cours...';
     this.disabled = true;
     
+    // Masquer les contrôles de zoom (+/-) et autres contrôles Leaflet
+    const zoomControl = document.querySelector('.leaflet-control-zoom');
+    const attributionControl = document.querySelector('.leaflet-control-attribution');
+    if (zoomControl) zoomControl.style.display = 'none';
+    if (attributionControl) attributionControl.style.display = 'none';
+    
     // Utiliser html2canvas pour capturer la carte
     html2canvas(mapElement, {
         useCORS: true,
@@ -594,6 +609,10 @@ document.getElementById('downloadPng').addEventListener('click', function() {
         backgroundColor: '#000000',
         scale: 2 // Qualité d'image (2x la résolution)
     }).then(canvas => {
+        // Réafficher les contrôles
+        if (zoomControl) zoomControl.style.display = '';
+        if (attributionControl) attributionControl.style.display = '';
+        
         // Créer un lien de téléchargement
         const link = document.createElement('a');
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -605,6 +624,10 @@ document.getElementById('downloadPng').addEventListener('click', function() {
         document.getElementById('downloadPng').innerHTML = originalText;
         document.getElementById('downloadPng').disabled = false;
     }).catch(error => {
+        // Réafficher les contrôles en cas d'erreur
+        if (zoomControl) zoomControl.style.display = '';
+        if (attributionControl) attributionControl.style.display = '';
+        
         console.error('Erreur lors de la génération PNG:', error);
         alert('Erreur lors de la génération de l\'image PNG');
         document.getElementById('downloadPng').innerHTML = originalText;
