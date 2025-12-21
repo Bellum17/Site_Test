@@ -37,10 +37,47 @@ var govIcon = L.icon({
 // Groupe de calques pour les symboles gouvernementaux
 var gouvernementLayer = L.layerGroup();
 
-// Placement au Caire
-var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
-caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
-gouvernementLayer.addLayer(caireGov);
+// Charger la carte publiée si elle existe
+const publishedMap = localStorage.getItem('published_map');
+if (publishedMap) {
+    try {
+        const mapData = JSON.parse(publishedMap);
+        
+        // Restaurer la position de la carte
+        if (mapData.center && mapData.zoom) {
+            map.setView([mapData.center.lat, mapData.center.lng], mapData.zoom);
+        }
+        
+        // Restaurer les marqueurs
+        if (mapData.markers && mapData.markers.length > 0) {
+            mapData.markers.forEach(function(markerData) {
+                if (markerData.type === 'government') {
+                    var marker = L.marker([markerData.latlng.lat, markerData.latlng.lng], {icon: govIcon});
+                    if (markerData.popup) {
+                        marker.bindPopup(markerData.popup);
+                    }
+                    gouvernementLayer.addLayer(marker);
+                }
+            });
+        } else {
+            // Fallback: marqueur par défaut au Caire
+            var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
+            caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
+            gouvernementLayer.addLayer(caireGov);
+        }
+    } catch (error) {
+        console.error('Erreur lors du chargement de la carte publiée:', error);
+        // Fallback: marqueur par défaut au Caire
+        var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
+        caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
+        gouvernementLayer.addLayer(caireGov);
+    }
+} else {
+    // Placement par défaut au Caire si aucune carte publiée
+    var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
+    caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
+    gouvernementLayer.addLayer(caireGov);
+}
 
 // Ajouter le groupe à la carte par défaut
 gouvernementLayer.addTo(map);

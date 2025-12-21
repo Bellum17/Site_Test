@@ -127,6 +127,41 @@
     transform: translateY(-2px);
 }
 
+.download-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #111;
+}
+
+.download-btn:disabled:hover {
+    background-color: #111;
+    color: #0f0;
+    transform: none;
+}
+
+.publish-btn {
+    background-color: #000;
+    border-color: #ffa500;
+    color: #ffa500;
+}
+
+.publish-btn:hover:not(:disabled) {
+    background-color: #ffa500;
+    color: #000;
+    box-shadow: 0 0 25px rgba(255, 165, 0, 0.6);
+}
+
+.publish-info {
+    margin-top: 15px;
+    color: #ffa500;
+    font-size: 14px;
+    text-align: center;
+}
+
+.publish-info.hidden {
+    display: none;
+}
+
 .download-btn span {
     font-size: 20px;
 }

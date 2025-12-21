@@ -1,0 +1,7 @@
+# Configuration GitHub Pages pour URLs propres
+permalink: pretty
+
+# Exclude files from being copied to _site
+exclude:
+  - README.md
+  - DISCORD_OAUTH_GUIDE.md

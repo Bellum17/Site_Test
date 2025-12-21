@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur de Carte - Royaume du Nil</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/icon_flag_rdn.png">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="editor-style.css">
+    
+    <!-- Bibliothèque pour export PNG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <a href="accueil" class="home-link" title="Retour à l'accueil">← Accueil</a>
+        <h1>ÉDITEUR DE CARTE - ROYAUME DU NIL</h1>
+        
+        <!-- Panel Admin -->
+        <div id="adminPanel" class="admin-panel">
+            <button id="loginBtn" class="admin-btn">
+                <span>🔐 Connexion Discord</span>
+            </button>
+            <div id="userInfo" class="user-info hidden">
+                <img id="userAvatar" src="" alt="Avatar" class="user-avatar">
+                <span id="userName"></span>
+                <button id="logoutBtn" class="logout-btn">Déconnexion</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="maCarte"></div>
+        
+        <!-- Boutons de téléchargement -->
+        <div class="download-section">
+            <h3>Gestion de la carte</h3>
+            <div class="download-buttons">
+                <button id="downloadPng" class="download-btn">
+                    <span>📥</span> Télécharger en PNG
+                </button>
+                <button id="downloadJson" class="download-btn">
+                    <span>💾</span> Télécharger en JSON
+                </button>
+                <label for="loadJson" class="download-btn" style="cursor: pointer;">
+                    <span>📂</span> Charger un JSON
+                    <input type="file" id="loadJson" accept=".json" style="display: none;">
+                </label>
+                <button id="publishMap" class="download-btn publish-btn" disabled>
+                    <span>🚀</span> Publier sur la carte actuelle
+                </button>
+            </div>
+            <p id="publishInfo" class="publish-info hidden">⚠️ Seuls les administrateurs peuvent publier les modifications</p>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+    <script src="admin-config.js"></script>
+    <script src="editor-script.js"></script>
+</body>
+</html>

@@ -45,20 +45,31 @@ legend.addTo(map);
 
 // CONFIGURATION DISCORD OAUTH
 const DISCORD_CLIENT_ID = '1452413073326346321';
-const DISCORD_REDIRECT_URI = 'https://bellum17.github.io/kingdomofnile/editor.html';
+const DISCORD_REDIRECT_URI = 'https://bellum17.github.io/kingdomofnile/editeur';
 const DISCORD_OAUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(DISCORD_REDIRECT_URI)}&response_type=token&scope=identify`;
-
 // Éléments DOM
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const userInfo = document.getElementById('userInfo');
 const userAvatar = document.getElementById('userAvatar');
 const userName = document.getElementById('userName');
+const publishBtn = document.getElementById('publishMap');
+const publishInfo = document.getElementById('publishInfo');
+const downloadPngBtn = document.getElementById('downloadPng');
+const downloadJsonBtn = document.getElementById('downloadJson');
+const loadJsonInput = document.getElementById('loadJson');
+
+// Variable globale pour stocker l'utilisateur actuel
+let currentUser = null;
 
 // Vérifier si l'utilisateur est déjà connecté
 function checkAuth() {
     const token = localStorage.getItem('discord_token');
-    if (token) {
+    const userData = localStorage.getItem('current_user');
+    if (token && userData) {
+        currentUser = JSON.parse(userData);
+        displayUser(currentUser);
+    } else if (token) {
         fetchUserInfo(token);
     }
 }
@@ -74,9 +85,15 @@ async function fetchUserInfo(token) {
         
         if (response.ok) {
             const user = await response.json();
+            currentUser = user;
+            localStorage.setItem('current_user', JSON.stringify(user));
             displayUser(user);
+            
+            // Logger la connexion
+            ADMIN_CONFIG.logConnection(user);
         } else {
             localStorage.removeItem('discord_token');
+            localStorage.removeItem('current_user');
         }
     } catch (error) {
         console.error('Erreur lors de la récupération des informations utilisateur:', error);
@@ -95,6 +112,26 @@ function displayUser(user) {
     
     loginBtn.style.display = 'none';
     userInfo.classList.remove('hidden');
+    
+    // Vérifier si l'utilisateur est admin
+    const isAdmin = ADMIN_CONFIG.isAdmin(user.id);
+    
+    if (isAdmin) {
+        // Activer tous les boutons pour les admins
+        publishBtn.disabled = false;
+        publishInfo.classList.add('hidden');
+        downloadPngBtn.disabled = false;
+        downloadJsonBtn.disabled = false;
+        loadJsonInput.disabled = false;
+    } else {
+        // Désactiver le bouton publier pour les non-admins
+        publishBtn.disabled = true;
+        publishInfo.classList.remove('hidden');
+        // Les autres boutons restent accessibles
+        downloadPngBtn.disabled = false;
+        downloadJsonBtn.disabled = false;
+        loadJsonInput.disabled = false;
+    }
 }
 
 // Connexion
@@ -104,9 +141,18 @@ loginBtn.addEventListener('click', () => {
 
 // Déconnexion
 logoutBtn.addEventListener('click', () => {
+    if (currentUser) {
+        ADMIN_CONFIG.logAction(currentUser.id, currentUser.username, 'logout');
+    }
     localStorage.removeItem('discord_token');
+    localStorage.removeItem('current_user');
+    currentUser = null;
     loginBtn.style.display = 'flex';
     userInfo.classList.add('hidden');
+    
+    // Désactiver les boutons
+    publishBtn.disabled = true;
+    publishInfo.classList.add('hidden');
 });
 
 // Gérer le retour OAuth2
@@ -223,9 +269,63 @@ document.getElementById('loadJson').addEventListener('change', function(e) {
             }
             
             alert('Carte chargée avec succès !');
+            
+            // Logger l'action
+            if (currentUser) {
+                ADMIN_CONFIG.logAction(currentUser.id, currentUser.username, 'load_json', {
+                    filename: file.name
+                });
+            }
         } catch (error) {
             alert('Erreur lors du chargement du fichier JSON: ' + error.message);
         }
     };
     reader.readAsText(file);
+});
+
+// Publier sur la carte actuelle (Admin uniquement)
+publishBtn.addEventListener('click', function() {
+    if (!currentUser || !ADMIN_CONFIG.isAdmin(currentUser.id)) {
+        alert('Vous devez être administrateur pour publier la carte.');
+        return;
+    }
+    
+    if (!confirm('⚠️ Êtes-vous sûr de vouloir publier cette carte sur le site principal ?\n\nCela remplacera la carte actuelle visible par tous les utilisateurs.')) {
+        return;
+    }
+    
+    // Collecter les données de la carte
+    const mapData = {
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+        markers: [],
+        timestamp: new Date().toISOString(),
+        publishedBy: currentUser.username,
+        publishedById: currentUser.id
+    };
+    
+    // Collecter tous les marqueurs
+    gouvernementLayer.eachLayer(function(layer) {
+        if (layer instanceof L.Marker) {
+            mapData.markers.push({
+                latlng: layer.getLatLng(),
+                popup: layer.getPopup() ? layer.getPopup().getContent() : null,
+                type: 'government'
+            });
+        }
+    });
+    
+    // Sauvegarder la version actuelle avant de publier
+    const versionId = ADMIN_CONFIG.saveMapVersion(mapData, currentUser.id, currentUser.username);
+    
+    // Publier (sauvegarder comme carte actuelle)
+    localStorage.setItem('published_map', JSON.stringify(mapData));
+    
+    // Logger l'action
+    ADMIN_CONFIG.logAction(currentUser.id, currentUser.username, 'publish_map', {
+        versionId: versionId,
+        markerCount: mapData.markers.length
+    });
+    
+    alert('✅ Carte publiée avec succès !\n\nVersion sauvegardée avec l\'ID: ' + versionId);
 });
