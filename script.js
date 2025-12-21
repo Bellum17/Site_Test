@@ -59,15 +59,8 @@ legend.onAdd = function (map) {
 legend.addTo(map);
 
 
-// --- 5. Menu Burger et Filtres ---
-const burgerBtn = document.getElementById('burgerBtn');
-const menuContent = document.getElementById('menuContent');
+// --- 5. Filtres de la carte ---
 const filterGouvernement = document.getElementById('filterGouvernement');
-
-// Toggle du menu burger
-burgerBtn.addEventListener('click', function() {
-    menuContent.classList.toggle('menu-hidden');
-});
 
 // Filtre pour les symboles gouvernementaux
 filterGouvernement.addEventListener('change', function() {
