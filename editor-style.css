@@ -186,16 +186,23 @@
     }
 }
 
+/* Container de la carte */
+.map-container {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
 /* Menu Burger - Bouton */
 .burger-btn {
     position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #000;
+    right: 10px;
+    top: 10px;
+    background-color: rgba(0, 0, 0, 0.9);
     color: #0f0;
     border: 2px solid #0f0;
-    padding: 10px 20px;
+    padding: 10px 15px;
     font-size: 14px;
     cursor: pointer;
     border-radius: 5px;
@@ -213,156 +220,219 @@
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
-/* Menu Burger - Panel */
+/* Menu des Unités - Overlay sur la carte */
 .unit-menu {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 350px;
-    height: 100vh;
-    background-color: #000;
-    border-right: 2px solid #0f0;
+    position: absolute;
+    right: 10px;
+    top: 55px;
+    width: 320px;
+    max-height: 500px;
+    background-color: rgba(0, 0, 0, 0.95);
+    border: 2px solid #0f0;
+    border-radius: 10px;
     z-index: 1000;
-    transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+    overflow: hidden;
 }
 
 .unit-menu.hidden {
-    transform: translateX(-100%);
+    display: none;
 }
 
 .unit-menu-header {
-    padding: 20px;
+    padding: 15px;
     border-bottom: 2px solid #0f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #000;
+    background-color: rgba(0, 255, 0, 0.1);
 }
 
 .unit-menu-header h2 {
     margin: 0;
     color: #0f0;
-    font-size: 18px;
+    font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 2px;
+    font-family: 'Orbitron', 'Courier New', monospace;
 }
 
 .close-menu-btn {
     background: none;
     border: none;
     color: #0f0;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
+    padding: 5px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    border-radius: 50%;
 }
 
 .close-menu-btn:hover {
     color: #ff0000;
-    transform: rotate(90deg);
+    background-color: rgba(255, 0, 0, 0.2);
 }
 
 .unit-menu-content {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 15px;
+    max-height: 400px;
 }
 
 /* Catégories d'unités */
 .unit-category {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .unit-category h3 {
     color: #0f0;
-    font-size: 14px;
+    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 0 0 15px 0;
-    padding-bottom: 10px;
+    letter-spacing: 1px;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
     border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+    font-family: 'Orbitron', 'Courier New', monospace;
 }
 
 .unit-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .unit-item {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 12px;
+    gap: 12px;
+    padding: 10px 12px;
     background-color: rgba(0, 255, 0, 0.05);
     border: 1px solid rgba(0, 255, 0, 0.3);
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .unit-item:hover {
     background-color: rgba(0, 255, 0, 0.15);
     border-color: #0f0;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-    transform: translateX(5px);
+    transform: scale(1.02);
 }
 
 .unit-item.selected {
-    background-color: rgba(0, 255, 0, 0.2);
+    background-color: rgba(0, 255, 0, 0.25);
     border-color: #0f0;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
 }
 
 .unit-item img {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
-    filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.5));
+    filter: drop-shadow(0 0 3px rgba(0, 255, 0, 0.5));
 }
 
 .unit-item span {
     color: #0f0;
-    font-size: 13px;
+    font-size: 12px;
     flex: 1;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-weight: 500;
 }
 
 /* Scrollbar personnalisée */
 .unit-menu-content::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .unit-menu-content::-webkit-scrollbar-track {
     background: rgba(0, 255, 0, 0.1);
+    border-radius: 3px;
 }
 
 .unit-menu-content::-webkit-scrollbar-thumb {
     background: #0f0;
-    border-radius: 4px;
+    border-radius: 3px;
 }
 
 .unit-menu-content::-webkit-scrollbar-thumb:hover {
     background: #0ff;
 }
 
+/* Style des popups Leaflet */
+.leaflet-popup-content-wrapper {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+    border: 2px solid #0f0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4) !important;
+}
+
+.leaflet-popup-content {
+    color: #0f0 !important;
+    font-family: 'Segoe UI', Arial, sans-serif !important;
+    margin: 15px !important;
+}
+
+.leaflet-popup-content b {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.leaflet-popup-tip {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+    border: 1px solid #0f0 !important;
+}
+
+.leaflet-popup-close-button {
+    color: #0f0 !important;
+}
+
+.leaflet-popup-close-button:hover {
+    color: #ff0000 !important;
+}
+
+.unit-delete-btn {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.unit-delete-btn:hover {
+    background-color: #cc0000;
+    transform: scale(1.02);
+}
+
 /* Responsive pour le menu burger */
 @media (max-width: 768px) {
     .unit-menu {
-        width: 80%;
+        width: calc(100% - 20px);
         max-width: 300px;
+        right: 10px;
     }
     
     .burger-btn {
-        position: static;
-        transform: none;
-        margin: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
     }
 }

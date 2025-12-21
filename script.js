@@ -41,7 +41,7 @@ var unitsLayer = L.layerGroup();
 // Définition des icônes d'unités
 const unitIcons = {
     'infanterie-motorisee': L.icon({
-        iconUrl: 'images/Infanterie motorisée.png',
+        iconUrl: 'images/Infanterie motorisee.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -53,7 +53,7 @@ const unitIcons = {
         popupAnchor: [0, -40]
     }),
     'infanterie-legere': L.icon({
-        iconUrl: 'images/Infanterie légère.png',
+        iconUrl: 'images/Infanterie legere.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -65,7 +65,7 @@ const unitIcons = {
         popupAnchor: [0, -40]
     }),
     'genie': L.icon({
-        iconUrl: 'images/Génie.png',
+        iconUrl: 'images/Genie.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -83,7 +83,7 @@ const unitIcons = {
         popupAnchor: [0, -40]
     }),
     'reserve': L.icon({
-        iconUrl: 'images/Réserve d\'hommes.png',
+        iconUrl: 'images/Reserve.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]

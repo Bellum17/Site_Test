@@ -73,7 +73,7 @@ let unitsLayer = L.layerGroup().addTo(map);
 // Définition des icônes d'unités
 const unitIcons = {
     'infanterie-motorisee': L.icon({
-        iconUrl: 'images/Infanterie motorisée.png',
+        iconUrl: 'images/Infanterie motorisee.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -85,7 +85,7 @@ const unitIcons = {
         popupAnchor: [0, -40]
     }),
     'infanterie-legere': L.icon({
-        iconUrl: 'images/Infanterie légère.png',
+        iconUrl: 'images/Infanterie legere.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -97,7 +97,7 @@ const unitIcons = {
         popupAnchor: [0, -40]
     }),
     'genie': L.icon({
-        iconUrl: 'images/Génie.png',
+        iconUrl: 'images/Genie.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -115,7 +115,7 @@ const unitIcons = {
         popupAnchor: [0, -40]
     }),
     'reserve': L.icon({
-        iconUrl: 'images/Réserve d\'hommes.png',
+        iconUrl: 'images/Reserve.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -143,6 +143,15 @@ closeMenuBtn.addEventListener('click', () => {
     unitMenu.classList.add('hidden');
 });
 
+// Fermer le menu en cliquant en dehors
+document.addEventListener('click', (e) => {
+    if (!unitMenu.classList.contains('hidden') && 
+        !unitMenu.contains(e.target) && 
+        !burgerBtn.contains(e.target)) {
+        unitMenu.classList.add('hidden');
+    }
+});
+
 // Sélection d'une unité
 unitItems.forEach(item => {
     item.addEventListener('click', () => {
@@ -162,31 +171,46 @@ unitItems.forEach(item => {
     });
 });
 
+// Stockage global des marqueurs pour suppression
+let markerIdCounter = 0;
+const markersMap = new Map();
+
 // Placement d'unités sur la carte
 map.on('click', (e) => {
     if (placementMode && selectedUnit) {
         const unitIcon = unitIcons[selectedUnit];
         const unitName = unitNames[selectedUnit];
         
+        const markerId = ++markerIdCounter;
+        
         const marker = L.marker(e.latlng, {
             icon: unitIcon,
             draggable: true
         });
         
-        marker.bindPopup(`
-            <b>${unitName}</b><br>
-            <button onclick="removeMarker(${marker._leaflet_id})" style="
-                background-color: #ff0000;
-                color: #fff;
-                border: none;
-                padding: 5px 10px;
-                cursor: pointer;
-                border-radius: 3px;
-                margin-top: 5px;
-            ">🗑️ Supprimer</button>
-        `);
-        
+        // Stocker le marqueur
+        markersMap.set(markerId, marker);
+        marker.customId = markerId;
         marker.unitType = selectedUnit;
+        
+        // Créer le contenu du popup
+        const popupContent = document.createElement('div');
+        popupContent.innerHTML = `
+            <b>${unitName}</b>
+            <button class="unit-delete-btn" data-marker-id="${markerId}">🗑️ Supprimer</button>
+        `;
+        
+        // Ajouter l'événement de suppression
+        popupContent.querySelector('.unit-delete-btn').addEventListener('click', function() {
+            const id = parseInt(this.dataset.markerId);
+            const markerToRemove = markersMap.get(id);
+            if (markerToRemove) {
+                unitsLayer.removeLayer(markerToRemove);
+                markersMap.delete(id);
+            }
+        });
+        
+        marker.bindPopup(popupContent);
         unitsLayer.addLayer(marker);
         
         // Réinitialiser le mode placement
@@ -197,14 +221,15 @@ map.on('click', (e) => {
     }
 });
 
-// Fonction pour supprimer un marqueur
-window.removeMarker = function(markerId) {
-    unitsLayer.eachLayer(layer => {
-        if (layer._leaflet_id === markerId) {
-            unitsLayer.removeLayer(layer);
-        }
-    });
-};
+// Annuler le mode placement avec Echap
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && placementMode) {
+        placementMode = false;
+        selectedUnit = null;
+        document.getElementById('maCarte').style.cursor = '';
+        unitItems.forEach(i => i.classList.remove('selected'));
+    }
+});
 
 // Variable globale pour stocker l'utilisateur actuel
 let currentUser = null;
@@ -439,30 +464,40 @@ document.getElementById('loadJson').addEventListener('change', function(e) {
             // Restaurer les unités
             if (mapData.units) {
                 unitsLayer.clearLayers();
+                markersMap.clear();
+                
                 mapData.units.forEach(function(unitData) {
                     if (unitData.type === 'unit' && unitData.unitType) {
                         const unitIcon = unitIcons[unitData.unitType];
                         const unitName = unitNames[unitData.unitType];
+                        
+                        const markerId = ++markerIdCounter;
                         
                         const marker = L.marker([unitData.latlng.lat, unitData.latlng.lng], {
                             icon: unitIcon,
                             draggable: true
                         });
                         
-                        marker.bindPopup(`
-                            <b>${unitName}</b><br>
-                            <button onclick="removeMarker(${marker._leaflet_id})" style="
-                                background-color: #ff0000;
-                                color: #fff;
-                                border: none;
-                                padding: 5px 10px;
-                                cursor: pointer;
-                                border-radius: 3px;
-                                margin-top: 5px;
-                            ">🗑️ Supprimer</button>
-                        `);
-                        
+                        markersMap.set(markerId, marker);
+                        marker.customId = markerId;
                         marker.unitType = unitData.unitType;
+                        
+                        const popupContent = document.createElement('div');
+                        popupContent.innerHTML = `
+                            <b>${unitName}</b>
+                            <button class="unit-delete-btn" data-marker-id="${markerId}">🗑️ Supprimer</button>
+                        `;
+                        
+                        popupContent.querySelector('.unit-delete-btn').addEventListener('click', function() {
+                            const id = parseInt(this.dataset.markerId);
+                            const markerToRemove = markersMap.get(id);
+                            if (markerToRemove) {
+                                unitsLayer.removeLayer(markerToRemove);
+                                markersMap.delete(id);
+                            }
+                        });
+                        
+                        marker.bindPopup(popupContent);
                         unitsLayer.addLayer(marker);
                     }
                 });
