@@ -17,30 +17,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-// Icône de gouvernement
-var govIcon = L.icon({
-    iconUrl: 'images/icon_gov_rdn.png',
-    iconSize: [60, 50],
-    iconAnchor: [30, 50],
-    popupAnchor: [0, -50]
-});
-
-var gouvernementLayer = L.layerGroup();
-var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
-caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
-gouvernementLayer.addLayer(caireGov);
-gouvernementLayer.addTo(map);
-
-// Légende
-var legend = L.control({position: 'bottomright'});
-legend.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'legend');
-    div.innerHTML = '<h4>Légende</h4>';
-    div.innerHTML += '<div class="legend-item"><span class="legend-color" style="background-color: #80e0ff;"></span> Symboles Gouvernementaux</div>';
-    return div;
-};
-legend.addTo(map);
-
 // --- 2. Authentification Discord OAuth2 ---
 
 // CONFIGURATION DISCORD OAUTH
@@ -60,65 +36,79 @@ const downloadJsonBtn = document.getElementById('downloadJson');
 const loadJsonInput = document.getElementById('loadJson');
 
 // Éléments du menu burger
-const burgerBtn = document.getElementById('burgerBtn');
-const unitMenu = document.getElementById('unitMenu');
+const burgerBtnMilitaire = document.getElementById('burgerBtnMilitaire');
+const burgerBtnCivil = document.getElementById('burgerBtnCivil');
+const unitMenuMilitaire = document.getElementById('unitMenuMilitaire');
+const unitMenuCivil = document.getElementById('unitMenuCivil');
 const closeMenuBtn = document.getElementById('closeMenu');
+const closeMenuCivilBtn = document.getElementById('closeMenuCivil');
 const unitItems = document.querySelectorAll('.unit-item');
+
+// Éléments des outils
+const measureBtn = document.getElementById('measureBtn');
+const coordBtn = document.getElementById('coordBtn');
 
 // Variables pour le placement des unités
 let selectedUnit = null;
 let placementMode = false;
 let unitsLayer = L.layerGroup().addTo(map);
 
-// Définition des icônes d'unités
+// Variables pour les outils
+let measureMode = false;
+let coordMode = false;
+let measurePoints = [];
+let measureLine = null;
+let measureMarkers = [];
+
+// Définition des icônes d'unités (format rectangulaire)
 const unitIcons = {
     'infanterie-motorisee': L.icon({
         iconUrl: 'images/Infanterie motorisee.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'cavalerie': L.icon({
         iconUrl: 'images/Cavalerie.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'infanterie-legere': L.icon({
         iconUrl: 'images/Infanterie legere.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'garde-royale': L.icon({
         iconUrl: 'images/Garde Royale.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'genie': L.icon({
         iconUrl: 'images/Genie.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'cdfa': L.icon({
         iconUrl: 'images/CDFA.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'commandement': L.icon({
         iconUrl: 'images/Commandement.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'reserve': L.icon({
         iconUrl: 'images/Reserve.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     })
 };
 
@@ -134,21 +124,43 @@ const unitNames = {
     'reserve': 'Réserve d\'hommes'
 };
 
-// Ouvrir/Fermer le menu burger
-burgerBtn.addEventListener('click', () => {
-    unitMenu.classList.toggle('hidden');
+// Fonction pour fermer tous les menus
+function closeAllMenus() {
+    unitMenuMilitaire.classList.add('hidden');
+    unitMenuCivil.classList.add('hidden');
+}
+
+// Ouvrir/Fermer le menu burger militaire
+burgerBtnMilitaire.addEventListener('click', () => {
+    unitMenuCivil.classList.add('hidden');
+    unitMenuMilitaire.classList.toggle('hidden');
+});
+
+// Ouvrir/Fermer le menu burger civil
+burgerBtnCivil.addEventListener('click', () => {
+    unitMenuMilitaire.classList.add('hidden');
+    unitMenuCivil.classList.toggle('hidden');
 });
 
 closeMenuBtn.addEventListener('click', () => {
-    unitMenu.classList.add('hidden');
+    unitMenuMilitaire.classList.add('hidden');
+});
+
+closeMenuCivilBtn.addEventListener('click', () => {
+    unitMenuCivil.classList.add('hidden');
 });
 
 // Fermer le menu en cliquant en dehors
 document.addEventListener('click', (e) => {
-    if (!unitMenu.classList.contains('hidden') && 
-        !unitMenu.contains(e.target) && 
-        !burgerBtn.contains(e.target)) {
-        unitMenu.classList.add('hidden');
+    if (!unitMenuMilitaire.classList.contains('hidden') && 
+        !unitMenuMilitaire.contains(e.target) && 
+        !burgerBtnMilitaire.contains(e.target)) {
+        unitMenuMilitaire.classList.add('hidden');
+    }
+    if (!unitMenuCivil.classList.contains('hidden') && 
+        !unitMenuCivil.contains(e.target) && 
+        !burgerBtnCivil.contains(e.target)) {
+        unitMenuCivil.classList.add('hidden');
     }
 });
 
@@ -163,11 +175,17 @@ unitItems.forEach(item => {
         selectedUnit = item.dataset.unit;
         placementMode = true;
         
+        // Désactiver les autres modes
+        measureMode = false;
+        coordMode = false;
+        measureBtn.classList.remove('active');
+        coordBtn.classList.remove('active');
+        
         // Changer le curseur de la carte
         document.getElementById('maCarte').style.cursor = 'crosshair';
         
         // Fermer le menu
-        unitMenu.classList.add('hidden');
+        closeAllMenus();
     });
 });
 
@@ -175,8 +193,169 @@ unitItems.forEach(item => {
 let markerIdCounter = 0;
 const markersMap = new Map();
 
-// Placement d'unités sur la carte
+// Annuler le mode placement avec Echap
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (placementMode) {
+            placementMode = false;
+            selectedUnit = null;
+            document.getElementById('maCarte').style.cursor = '';
+            unitItems.forEach(i => i.classList.remove('selected'));
+        }
+        if (measureMode) {
+            resetMeasure();
+        }
+        if (coordMode) {
+            coordMode = false;
+            coordBtn.classList.remove('active');
+            document.getElementById('maCarte').style.cursor = '';
+            hideCoordDisplay();
+        }
+    }
+});
+
+// --- 3. OUTILS DE MESURE ET COORDONNÉES ---
+
+// Créer les éléments d'affichage
+const coordDisplay = document.createElement('div');
+coordDisplay.className = 'coord-display';
+coordDisplay.innerHTML = 'Lat: --, Lng: --';
+document.querySelector('.map-container').appendChild(coordDisplay);
+
+const measureInfo = document.createElement('div');
+measureInfo.className = 'measure-info';
+measureInfo.innerHTML = 'Distance: 0 km<div class="hint">Cliquez pour ajouter des points. Double-clic pour terminer.</div>';
+document.querySelector('.map-container').appendChild(measureInfo);
+
+// Fonction pour calculer la distance entre deux points (en km)
+function calculateDistance(latlng1, latlng2) {
+    return latlng1.distanceTo(latlng2) / 1000; // en km
+}
+
+// Fonction pour calculer la distance totale
+function calculateTotalDistance() {
+    let total = 0;
+    for (let i = 1; i < measurePoints.length; i++) {
+        total += calculateDistance(measurePoints[i-1], measurePoints[i]);
+    }
+    return total;
+}
+
+// Fonction pour afficher/cacher les coordonnées
+function showCoordDisplay(lat, lng) {
+    coordDisplay.innerHTML = `Lat: ${lat.toFixed(5)}<br>Lng: ${lng.toFixed(5)}`;
+    coordDisplay.classList.add('visible');
+}
+
+function hideCoordDisplay() {
+    coordDisplay.classList.remove('visible');
+}
+
+// Fonction pour réinitialiser la mesure
+function resetMeasure() {
+    measureMode = false;
+    measureBtn.classList.remove('active');
+    document.getElementById('maCarte').style.cursor = '';
+    measureInfo.classList.remove('visible');
+    
+    // Supprimer la ligne et les marqueurs
+    if (measureLine) {
+        map.removeLayer(measureLine);
+        measureLine = null;
+    }
+    measureMarkers.forEach(m => map.removeLayer(m));
+    measureMarkers = [];
+    measurePoints = [];
+}
+
+// Fonction pour mettre à jour l'affichage de la mesure
+function updateMeasureDisplay() {
+    const totalDistance = calculateTotalDistance();
+    measureInfo.innerHTML = `Distance: ${totalDistance.toFixed(2)} km<div class="hint">Cliquez pour ajouter des points. Double-clic pour terminer.</div>`;
+}
+
+// Bouton de mesure
+measureBtn.addEventListener('click', () => {
+    // Désactiver les autres modes
+    placementMode = false;
+    selectedUnit = null;
+    coordMode = false;
+    coordBtn.classList.remove('active');
+    hideCoordDisplay();
+    unitItems.forEach(i => i.classList.remove('selected'));
+    closeAllMenus();
+    
+    if (measureMode) {
+        resetMeasure();
+    } else {
+        measureMode = true;
+        measureBtn.classList.add('active');
+        document.getElementById('maCarte').style.cursor = 'crosshair';
+        measureInfo.classList.add('visible');
+        measureInfo.innerHTML = 'Distance: 0 km<div class="hint">Cliquez pour ajouter des points. Double-clic pour terminer.</div>';
+    }
+});
+
+// Bouton de coordonnées
+coordBtn.addEventListener('click', () => {
+    // Désactiver les autres modes
+    placementMode = false;
+    selectedUnit = null;
+    resetMeasure();
+    unitItems.forEach(i => i.classList.remove('selected'));
+    closeAllMenus();
+    
+    if (coordMode) {
+        coordMode = false;
+        coordBtn.classList.remove('active');
+        document.getElementById('maCarte').style.cursor = '';
+        hideCoordDisplay();
+    } else {
+        coordMode = true;
+        coordBtn.classList.add('active');
+        document.getElementById('maCarte').style.cursor = 'crosshair';
+    }
+});
+
+// Gestion des clics sur la carte pour les outils
 map.on('click', (e) => {
+    // Mode mesure
+    if (measureMode) {
+        measurePoints.push(e.latlng);
+        
+        // Ajouter un petit marqueur
+        const pointMarker = L.circleMarker(e.latlng, {
+            radius: 5,
+            color: '#0f0',
+            fillColor: '#0f0',
+            fillOpacity: 1
+        }).addTo(map);
+        measureMarkers.push(pointMarker);
+        
+        // Mettre à jour la ligne
+        if (measureLine) {
+            map.removeLayer(measureLine);
+        }
+        if (measurePoints.length > 1) {
+            measureLine = L.polyline(measurePoints, {
+                color: '#0f0',
+                weight: 3,
+                opacity: 0.8,
+                dashArray: '10, 10'
+            }).addTo(map);
+        }
+        
+        updateMeasureDisplay();
+        return;
+    }
+    
+    // Mode coordonnées
+    if (coordMode) {
+        showCoordDisplay(e.latlng.lat, e.latlng.lng);
+        return;
+    }
+    
+    // Mode placement d'unités
     if (placementMode && selectedUnit) {
         const unitIcon = unitIcons[selectedUnit];
         const unitName = unitNames[selectedUnit];
@@ -221,13 +400,24 @@ map.on('click', (e) => {
     }
 });
 
-// Annuler le mode placement avec Echap
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && placementMode) {
-        placementMode = false;
-        selectedUnit = null;
+// Double-clic pour terminer la mesure
+map.on('dblclick', (e) => {
+    if (measureMode && measurePoints.length > 0) {
+        // Afficher le résultat final
+        const totalDistance = calculateTotalDistance();
+        measureInfo.innerHTML = `Distance totale: ${totalDistance.toFixed(2)} km<div class="hint">Cliquez sur ✎ pour une nouvelle mesure.</div>`;
+        
+        // Désactiver le mode mesure mais garder l'affichage
+        measureMode = false;
+        measureBtn.classList.remove('active');
         document.getElementById('maCarte').style.cursor = '';
-        unitItems.forEach(i => i.classList.remove('selected'));
+    }
+});
+
+// Afficher les coordonnées au survol si en mode coordonnées
+map.on('mousemove', (e) => {
+    if (coordMode) {
+        showCoordDisplay(e.latlng.lat, e.latlng.lng);
     }
 });
 

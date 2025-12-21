@@ -26,67 +26,58 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // --- 3. Icônes personnalisées ---
 
-// Icône de gouvernement (GOV)
-var govIcon = L.icon({
-    iconUrl: 'images/icon_gov_rdn.png',
-    iconSize: [60, 50],        // Taille de l'icône (largeur x hauteur) - format rectangulaire
-    iconAnchor: [30, 50],      // Point d'ancrage (centré en bas)
-    popupAnchor: [0, -50]      // Position de la popup
-});
-
-// Groupe de calques pour les symboles gouvernementaux
-var gouvernementLayer = L.layerGroup();
+// Groupe de calques pour les unités
 var unitsLayer = L.layerGroup();
 
-// Définition des icônes d'unités
+// Définition des icônes d'unités (format rectangulaire)
 const unitIcons = {
     'infanterie-motorisee': L.icon({
         iconUrl: 'images/Infanterie motorisee.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'cavalerie': L.icon({
         iconUrl: 'images/Cavalerie.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'infanterie-legere': L.icon({
         iconUrl: 'images/Infanterie legere.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'garde-royale': L.icon({
         iconUrl: 'images/Garde Royale.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'genie': L.icon({
         iconUrl: 'images/Genie.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'cdfa': L.icon({
         iconUrl: 'images/CDFA.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'commandement': L.icon({
         iconUrl: 'images/Commandement.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     }),
     'reserve': L.icon({
         iconUrl: 'images/Reserve.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -40]
+        iconSize: [50, 35],
+        iconAnchor: [25, 35],
+        popupAnchor: [0, -35]
     })
 };
 
@@ -112,24 +103,6 @@ if (publishedMap) {
             map.setView([mapData.center.lat, mapData.center.lng], mapData.zoom);
         }
         
-        // Restaurer les marqueurs
-        if (mapData.markers && mapData.markers.length > 0) {
-            mapData.markers.forEach(function(markerData) {
-                if (markerData.type === 'government') {
-                    var marker = L.marker([markerData.latlng.lat, markerData.latlng.lng], {icon: govIcon});
-                    if (markerData.popup) {
-                        marker.bindPopup(markerData.popup);
-                    }
-                    gouvernementLayer.addLayer(marker);
-                }
-            });
-        } else {
-            // Fallback: marqueur par défaut au Caire
-            var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
-            caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
-            gouvernementLayer.addLayer(caireGov);
-        }
-        
         // Restaurer les unités
         if (mapData.units && mapData.units.length > 0) {
             mapData.units.forEach(function(unitData) {
@@ -147,44 +120,8 @@ if (publishedMap) {
         }
     } catch (error) {
         console.error('Erreur lors du chargement de la carte publiée:', error);
-        // Fallback: marqueur par défaut au Caire
-        var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
-        caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
-        gouvernementLayer.addLayer(caireGov);
     }
-} else {
-    // Placement par défaut au Caire si aucune carte publiée
-    var caireGov = L.marker([30.0444, 31.2357], {icon: govIcon});
-    caireGov.bindPopup("<b>Le Caire</b><br>Capitale du Royaume du Nil<br><span style='color:#87CEEB'>● Gouvernement</span>");
-    gouvernementLayer.addLayer(caireGov);
 }
 
-// Ajouter les groupes à la carte par défaut
-gouvernementLayer.addTo(map);
+// Ajouter les unités à la carte
 unitsLayer.addTo(map);
-
-
-// --- 4. Légende de la carte ---
-var legend = L.control({position: 'bottomright'});
-
-legend.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'legend');
-    div.innerHTML = '<h4>Légende</h4>';
-    div.innerHTML += '<div class="legend-item"><span class="legend-color" style="background-color: #80e0ff;"></span> Symboles Gouvernementaux</div>';
-    return div;
-};
-
-legend.addTo(map);
-
-
-// --- 5. Filtres de la carte ---
-const filterGouvernement = document.getElementById('filterGouvernement');
-
-// Filtre pour les symboles gouvernementaux
-filterGouvernement.addEventListener('change', function() {
-    if (this.checked) {
-        gouvernementLayer.addTo(map);
-    } else {
-        map.removeLayer(gouvernementLayer);
-    }
-});

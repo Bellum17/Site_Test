@@ -46,13 +46,28 @@
         <div class="map-container">
             <div id="maCarte"></div>
             
-            <!-- Bouton Menu Burger sur la carte -->
-            <button id="burgerBtn" class="burger-btn" title="Ajouter des unités">
-                <span>☰</span> Unités
-            </button>
+            <!-- Boutons Outils en bas à gauche -->
+            <div class="tools-container">
+                <button id="measureBtn" class="tool-btn" title="Mesurer une distance">
+                    <span>✎</span>
+                </button>
+                <button id="coordBtn" class="tool-btn" title="Afficher les coordonnées">
+                    <span>⚘</span>
+                </button>
+            </div>
             
-            <!-- Menu des Unités sur la carte -->
-            <div id="unitMenu" class="unit-menu hidden">
+            <!-- Boutons Menu Burger sur la carte -->
+            <div class="burger-container">
+                <button id="burgerBtnMilitaire" class="burger-btn" title="Ajouter des unités militaires">
+                    <span>☰</span> Unités militaires
+                </button>
+                <button id="burgerBtnCivil" class="burger-btn" title="Ajouter des unités civiles">
+                    <span>☰</span> Unités civiles
+                </button>
+            </div>
+            
+            <!-- Menu des Unités Militaires sur la carte -->
+            <div id="unitMenuMilitaire" class="unit-menu hidden">
                 <div class="unit-menu-header">
                     <h2>Unités Militaires</h2>
                     <button id="closeMenu" class="close-menu-btn">✕</button>
@@ -116,6 +131,20 @@
                                 <span>Réserve d'hommes</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu des Unités Civiles sur la carte -->
+            <div id="unitMenuCivil" class="unit-menu hidden">
+                <div class="unit-menu-header">
+                    <h2>Unités Civiles</h2>
+                    <button id="closeMenuCivil" class="close-menu-btn">✕</button>
+                </div>
+                <div class="unit-menu-content">
+                    <div class="empty-menu-message">
+                        <span>🚧</span>
+                        <p>Aucune unité civile disponible pour le moment</p>
                     </div>
                 </div>
             </div>
