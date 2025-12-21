@@ -163,14 +163,6 @@ main {
     margin-bottom: 12px;
 }
 
-.instruction {
-    color: #0f0;
-    font-size: 11px;
-    margin-bottom: 15px;
-    opacity: 0.8;
-    font-style: italic;
-}
-
 .filter-option {
     display: flex;
     align-items: center;
@@ -190,82 +182,4 @@ main {
 
 .filter-option:hover {
     color: #0ff;
-}
-
-/* Catégories d'unités */
-.unit-categories {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.category {
-    background: rgba(0, 255, 0, 0.05);
-    border: 1px solid rgba(0, 255, 0, 0.3);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.category h5 {
-    color: #0f0;
-    font-size: 12px;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Boutons d'unités */
-.unit-btn {
-    width: 100%;
-    background-color: #000;
-    color: #0f0;
-    border: 1px solid #0f0;
-    padding: 8px 10px;
-    margin: 4px 0;
-    cursor: pointer;
-    font-size: 12px;
-    text-align: left;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.unit-btn:hover {
-    background-color: #0f0;
-    color: #000;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-}
-
-.unit-btn.selected {
-    background-color: #0f0;
-    color: #000;
-    font-weight: bold;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
-}
-
-.unit-icon {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* Bouton effacer */
-.clear-btn {
-    width: 100%;
-    background-color: #000;
-    color: #ff0000;
-    border: 2px solid #ff0000;
-    padding: 10px;
-    margin-top: 15px;
-    cursor: pointer;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-}
-
-.clear-btn:hover {
-    background-color: #ff0000;
-    color: #000;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }
