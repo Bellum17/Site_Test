@@ -4,7 +4,7 @@
 const GIST_CONFIG = {
     // Votre token GitHub (créé sur https://github.com/settings/tokens)
     // Permissions nécessaires : "gist" uniquement
-    githubToken: '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', // Exemple: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    githubToken: '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', // Exemple: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     
     // ID du Gist (laissez vide pour la première publication, sera rempli automatiquement)
     gistId: '', // Sera mis à jour automatiquement après la première publication
