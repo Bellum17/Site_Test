@@ -1,0 +1,65 @@
+name: Gist API
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action (publish or load)'
+        required: true
+        type: string
+      mapData:
+        description: 'Map data (JSON)'
+        required: false
+        type: string
+
+jobs:
+  gist-operation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish to Gist
+        if: ${{ github.event.inputs.action == 'publish' }}
+        id: publish
+        run: |
+          GIST_ID="${{ secrets.GIST_ID }}"
+          
+          if [ -z "$GIST_ID" ]; then
+            # Create new gist
+            RESPONSE=$(curl -X POST https://api.github.com/gists \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_GIST_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "description": "Carte publiée du Royaume du Nil",
+                "public": true,
+                "files": {
+                  "kingdom-of-nile-map.json": {
+                    "content": ${{ toJSON(github.event.inputs.mapData) }}
+                  }
+                }
+              }')
+            GIST_ID=$(echo "$RESPONSE" | jq -r '.id')
+            echo "NEW_GIST_ID=$GIST_ID" >> $GITHUB_OUTPUT
+          else
+            # Update existing gist
+            curl -X PATCH "https://api.github.com/gists/$GIST_ID" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_GIST_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "files": {
+                  "kingdom-of-nile-map.json": {
+                    "content": ${{ toJSON(github.event.inputs.mapData) }}
+                  }
+                }
+              }'
+          fi
+          
+          echo "gist_id=$GIST_ID" >> $GITHUB_OUTPUT
+          echo "url=https://gist.github.com/$GIST_ID" >> $GITHUB_OUTPUT
+
+      - name: Load from Gist
+        if: ${{ github.event.inputs.action == 'load' }}
+        run: |
+          GIST_ID="${{ secrets.GIST_ID }}"
+          if [ -n "$GIST_ID" ]; then
+            curl -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/gists/$GIST_ID"
+          fi

@@ -37,10 +37,117 @@ header {
 }
 
 h1 {
-    margin: 0;
+    margin: 0 0 15px 0;
     text-transform: uppercase;
     letter-spacing: 3px;
     text-shadow: 0 0 10px #0f0;
+}
+
+/* Panel de connexion Discord sur map */
+.discord-panel-map {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.discord-login-btn {
+    background-color: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.discord-login-btn:hover {
+    background-color: #0f0;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.discord-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #000;
+    border: 2px solid #0f0;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.discord-user-info.hidden {
+    display: none;
+}
+
+.discord-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #0f0;
+}
+
+.discord-user-info span {
+    color: #0f0;
+    font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.discord-logout-btn {
+    background-color: #000;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.discord-logout-btn:hover {
+    background-color: #ff0000;
+    color: #000;
+}
+
+/* Options de la carte */
+.map-options {
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.map-options h3 {
+    margin: 0 0 10px 0;
+    color: #0f0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.filter-option {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    cursor: pointer;
+    color: #0f0;
+    font-size: 14px;
+}
+
+.filter-option input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    accent-color: #0f0;
+}
+
+.filter-option:hover {
+    color: #0ff;
 }
 
 /* Effet de curseur clignotant */
@@ -58,9 +165,10 @@ main {
 }
 
 #maCarte {
-    height: 80vh;
+    height: 70vh;
     width: 100%;
-    border: 1px solid #0f0;
+    max-width: 1400px;
+    margin: 0 auto;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
     background-color: #000;
 }
@@ -118,90 +226,3 @@ main {
     display: inline-block;
 }
 
-/* Menu Burger */
-#menuBurger {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    z-index: 1000;
-}
-
-#burgerBtn {
-    background-color: #000;
-    color: #0f0;
-    border: 2px solid #0f0;
-    font-size: 24px;
-    padding: 10px 15px;
-    cursor: pointer;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-#burgerBtn:hover {
-    background-color: #0f0;
-    color: #000;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-}
-
-#menuContent {
-    background-color: #000;
-    border: 2px solid #0f0;
-    padding: 15px;
-    margin-top: 10px;
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
-    min-width: 320px;
-    max-width: 400px;
-    max-height: 80vh;
-    overflow-y: auto;
-    transition: all 0.3s ease;
-}
-
-#menuContent.menu-hidden {
-    display: none;
-}
-
-#menuContent h3 {
-    margin: 0 0 15px 0;
-    color: #0f0;
-    text-transform: uppercase;
-    font-size: 16px;
-    border-bottom: 1px solid #0f0;
-    padding-bottom: 8px;
-    letter-spacing: 2px;
-}
-
-/* Sections du menu */
-.menu-section {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(0, 255, 0, 0.3);
-}
-
-.menu-section h4 {
-    color: #0f0;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
-}
-
-.filter-option {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-    cursor: pointer;
-    color: #0f0;
-    font-size: 14px;
-}
-
-.filter-option input[type="checkbox"] {
-    margin-right: 10px;
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-    accent-color: #0f0;
-}
-
-.filter-option:hover {
-    color: #0ff;
-}

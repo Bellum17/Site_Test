@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royaume du Nil - Panel Gouvernemental</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/icon_flag_rdn.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-panel-style.css">
+</head>
+<body>
+
+    <header>
+        <a href="accueil" class="home-link" title="Retour à l'accueil">← Accueil</a>
+        <h1>PANEL GOUVERNEMENTAL - ROYAUME DU NIL</h1>
+        
+        <!-- Info Admin -->
+        <div id="adminInfo" class="admin-info hidden">
+            <img id="adminAvatar" src="" alt="Avatar" class="admin-avatar">
+            <span id="adminName"></span>
+        </div>
+    </header>
+
+    <main class="panel-container">
+        <!-- Section Logs de connexion -->
+        <section class="panel-section">
+            <h2>📊 Logs de connexion</h2>
+            <div class="logs-container" id="logsContainer">
+                <p class="no-data">Aucun log disponible</p>
+            </div>
+        </section>
+
+        <!-- Section Versions de la carte -->
+        <section class="panel-section">
+            <h2>🗺️ Versions sauvegardées</h2>
+            <div class="versions-container" id="versionsContainer">
+                <p class="no-data">Aucune version sauvegardée</p>
+            </div>
+        </section>
+
+        <!-- Section Actions -->
+        <section class="panel-section">
+            <h2>⚙️ Actions d'administration</h2>
+            <div class="actions-container">
+                <button id="clearLogs" class="action-btn danger">
+                    <span>🗑️</span> Effacer tous les logs
+                </button>
+                <button id="exportLogs" class="action-btn">
+                    <span>💾</span> Exporter les logs
+                </button>
+                <button id="exportVersions" class="action-btn">
+                    <span>📥</span> Exporter les versions
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="admin-config.js"></script>
+    <script src="admin-panel-script.js"></script>
+</body>
+</html>

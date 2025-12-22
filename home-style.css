@@ -21,6 +21,80 @@ body {
             rgba(0, 255, 0, 0.03) 2px,
             rgba(0, 255, 0, 0.03) 4px
         );
+    position: relative;
+}
+
+/* Panel de connexion Discord */
+.discord-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.discord-login-btn {
+    background-color: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.discord-login-btn:hover {
+    background-color: #0f0;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.discord-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #000;
+    border: 2px solid #0f0;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.discord-user-info.hidden {
+    display: none;
+}
+
+.discord-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #0f0;
+}
+
+.discord-user-info span {
+    color: #0f0;
+    font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.discord-logout-btn {
+    background-color: #000;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.discord-logout-btn:hover {
+    background-color: #ff0000;
+    color: #000;
 }
 
 .container {
@@ -64,15 +138,11 @@ body {
 .flag {
     width: 120px;
     height: auto;
-    border: 3px solid #0f0;
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
     transition: all 0.3s ease;
 }
 
 .flag:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 50px rgba(0, 255, 0, 0.8);
 }
 
 .title {
@@ -181,6 +251,14 @@ body {
     line-height: 1.6;
 }
 
+/* CTA Buttons Container */
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 /* CTA Button */
 .cta-button {
     display: inline-flex;
@@ -190,7 +268,7 @@ body {
     color: #0f0;
     border: 3px solid #0f0;
     padding: 20px 40px;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: bold;
     text-decoration: none;
     text-transform: uppercase;
@@ -241,6 +319,32 @@ body {
 
 .cta-button:hover .button-arrow {
     transform: translateX(10px);
+}
+
+/* Bouton Panel Gouvernemental - Style différent */
+.panel-button {
+    border-color: #ffa500;
+    color: #ffa500;
+    animation: glow-orange 2s ease-in-out infinite;
+}
+
+@keyframes glow-orange {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(255, 165, 0, 0.6);
+    }
+}
+
+.panel-button::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.3), transparent);
+}
+
+.panel-button:hover {
+    background-color: #ffa500;
+    color: #000;
+    box-shadow: 0 0 50px rgba(255, 165, 0, 0.8);
 }
 
 /* Footer */
