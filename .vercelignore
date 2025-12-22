@@ -3,3 +3,8 @@ docs/
 !README_VERCEL.md
 .git/
 .DS_Store
+_config.yml
+Gemfile
+Gemfile.lock
+.jekyll-cache/
+_site/
