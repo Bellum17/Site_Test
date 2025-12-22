@@ -56,26 +56,36 @@
                 </button>
             </div>
             
-            <!-- Boutons Menu Burger sur la carte -->
+            <!-- Bouton Menu Burger unique sur la carte -->
             <div class="burger-container">
-                <button id="burgerBtnMilitaire" class="burger-btn" title="Ajouter des unités militaires">
-                    <span>☰</span> Unités militaires
-                </button>
-                <button id="burgerBtnCivil" class="burger-btn" title="Ajouter des unités civiles">
-                    <span>☰</span> Unités civiles
-                </button>
-                <button id="burgerBtnInfra" class="burger-btn" title="Ajouter des infrastructures">
-                    <span>☰</span> Infrastructures
+                <button id="burgerBtn" class="burger-btn" title="Ajouter des unités">
+                    <span>☰</span> Unités
                 </button>
             </div>
             
-            <!-- Menu des Unités Militaires sur la carte -->
-            <div id="unitMenuMilitaire" class="unit-menu hidden">
+            <!-- Menu unique avec onglets -->
+            <div id="unitMenu" class="unit-menu hidden">
                 <div class="unit-menu-header">
-                    <h2>Unités Militaires</h2>
+                    <h2>Sélectionner des unités</h2>
                     <button id="closeMenu" class="close-menu-btn">✕</button>
                 </div>
+                
+                <!-- Onglets -->
+                <div class="unit-tabs">
+                    <button class="unit-tab active" data-tab="militaire">
+                        <span>🎖️</span> Militaires
+                    </button>
+                    <button class="unit-tab" data-tab="civil">
+                        <span>👥</span> Civiles
+                    </button>
+                    <button class="unit-tab" data-tab="infra">
+                        <span>🏗️</span> Infrastructures
+                    </button>
+                </div>
+                
                 <div class="unit-menu-content">
+                    <!-- Onglet Militaires -->
+                    <div class="tab-content active" data-content="militaire">
                     <!-- Unités de Combat -->
                     <div class="unit-category">
                         <h3>⚔️ Unités de Combat</h3>
@@ -135,33 +145,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Menu des Unités Civiles sur la carte -->
-            <div id="unitMenuCivil" class="unit-menu hidden">
-                <div class="unit-menu-header">
-                    <h2>Unités Civiles</h2>
-                    <button id="closeMenuCivil" class="close-menu-btn">✕</button>
-                </div>
-                <div class="unit-menu-content">
-                    <div class="empty-menu-message">
-                        <span>🚧</span>
-                        <p>Aucune unité civile disponible pour le moment</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Menu des Infrastructures sur la carte -->
-            <div id="unitMenuInfra" class="unit-menu hidden">
-                <div class="unit-menu-header">
-                    <h2>Infrastructures</h2>
-                    <button id="closeMenuInfra" class="close-menu-btn">✕</button>
-                </div>
-                <div class="unit-menu-content">
-                    <div class="empty-menu-message">
-                        <span>🏗️</span>
-                        <p>Aucune infrastructure disponible pour le moment</p>
+                    
+                    <!-- Onglet Civiles -->
+                    <div class="tab-content" data-content="civil">
+                        <div class="empty-menu-message">
+                            <span>🚧</span>
+                            <p>Aucune unité civile disponible pour le moment</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Onglet Infrastructures -->
+                    <div class="tab-content" data-content="infra">
+                        <div class="empty-menu-message">
+                            <span>🏗️</span>
+                            <p>Aucune infrastructure disponible pour le moment</p>
+                        </div>
                     </div>
                 </div>
             </div>

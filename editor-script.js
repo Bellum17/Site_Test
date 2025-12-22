@@ -36,15 +36,11 @@ const downloadJsonBtn = document.getElementById('downloadJson');
 const loadJsonInput = document.getElementById('loadJson');
 
 // Éléments du menu burger
-const burgerBtnMilitaire = document.getElementById('burgerBtnMilitaire');
-const burgerBtnCivil = document.getElementById('burgerBtnCivil');
-const burgerBtnInfra = document.getElementById('burgerBtnInfra');
-const unitMenuMilitaire = document.getElementById('unitMenuMilitaire');
-const unitMenuCivil = document.getElementById('unitMenuCivil');
-const unitMenuInfra = document.getElementById('unitMenuInfra');
+const burgerBtn = document.getElementById('burgerBtn');
+const unitMenu = document.getElementById('unitMenu');
 const closeMenuBtn = document.getElementById('closeMenu');
-const closeMenuCivilBtn = document.getElementById('closeMenuCivil');
-const closeMenuInfraBtn = document.getElementById('closeMenuInfra');
+const unitTabs = document.querySelectorAll('.unit-tab');
+const tabContents = document.querySelectorAll('.tab-content');
 const unitItems = document.querySelectorAll('.unit-item');
 
 // Éléments des outils
@@ -131,59 +127,39 @@ const unitNames = {
 
 // Fonction pour fermer tous les menus
 function closeAllMenus() {
-    unitMenuMilitaire.classList.add('hidden');
-    unitMenuCivil.classList.add('hidden');
+    unitMenu.classList.add('hidden');
 }
 
-// Ouvrir/Fermer le menu burger militaire
-burgerBtnMilitaire.addEventListener('click', () => {
-    unitMenuCivil.classList.add('hidden');
-    unitMenuInfra.classList.add('hidden');
-    unitMenuMilitaire.classList.toggle('hidden');
-});
-
-// Ouvrir/Fermer le menu burger civil
-burgerBtnCivil.addEventListener('click', () => {
-    unitMenuMilitaire.classList.add('hidden');
-    unitMenuInfra.classList.add('hidden');
-    unitMenuCivil.classList.toggle('hidden');
-});
-
-// Ouvrir/Fermer le menu burger infrastructures
-burgerBtnInfra.addEventListener('click', () => {
-    unitMenuMilitaire.classList.add('hidden');
-    unitMenuCivil.classList.add('hidden');
-    unitMenuInfra.classList.toggle('hidden');
+// Ouvrir/Fermer le menu burger unique
+burgerBtn.addEventListener('click', () => {
+    unitMenu.classList.toggle('hidden');
 });
 
 closeMenuBtn.addEventListener('click', () => {
-    unitMenuMilitaire.classList.add('hidden');
+    unitMenu.classList.add('hidden');
 });
 
-closeMenuCivilBtn.addEventListener('click', () => {
-    unitMenuCivil.classList.add('hidden');
-});
-
-closeMenuInfraBtn.addEventListener('click', () => {
-    unitMenuInfra.classList.add('hidden');
+// Gestion des onglets
+unitTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const targetTab = tab.dataset.tab;
+        
+        // Retirer l'état actif de tous les onglets et contenus
+        unitTabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        
+        // Activer l'onglet et le contenu sélectionnés
+        tab.classList.add('active');
+        document.querySelector(`[data-content="${targetTab}"]`).classList.add('active');
+    });
 });
 
 // Fermer le menu en cliquant en dehors
 document.addEventListener('click', (e) => {
-    if (!unitMenuMilitaire.classList.contains('hidden') && 
-        !unitMenuMilitaire.contains(e.target) && 
-        !burgerBtnMilitaire.contains(e.target)) {
-        unitMenuMilitaire.classList.add('hidden');
-    }
-    if (!unitMenuCivil.classList.contains('hidden') && 
-        !unitMenuCivil.contains(e.target) && 
-        !burgerBtnCivil.contains(e.target)) {
-        unitMenuCivil.classList.add('hidden');
-    }
-    if (!unitMenuInfra.classList.contains('hidden') && 
-        !unitMenuInfra.contains(e.target) && 
-        !burgerBtnInfra.contains(e.target)) {
-        unitMenuInfra.classList.add('hidden');
+    if (!unitMenu.classList.contains('hidden') && 
+        !unitMenu.contains(e.target) && 
+        !burgerBtn.contains(e.target)) {
+        unitMenu.classList.add('hidden');
     }
 });
 
