@@ -187,22 +187,27 @@
 
 .version-actions {
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-top: 15px;
 }
 
 .version-btn {
-    flex: 1;
+    flex: 1 1 calc(50% - 4px); /* 2 boutons par ligne */
+    min-width: 100px;
     background-color: #000;
     color: #0f0;
     border: 1px solid #0f0;
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 8px 10px;
+    font-size: 11px;
     cursor: pointer;
     border-radius: 3px;
     transition: all 0.3s ease;
     font-family: 'Courier New', Courier, monospace;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .version-btn:hover {
@@ -217,6 +222,16 @@
 
 .version-btn.restore:hover {
     background-color: #ffa500;
+    color: #000;
+}
+
+.version-btn.danger {
+    border-color: #f00;
+    color: #f00;
+}
+
+.version-btn.danger:hover {
+    background-color: #f00;
     color: #000;
 }
 

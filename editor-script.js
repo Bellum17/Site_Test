@@ -818,8 +818,8 @@ publishBtn.addEventListener('click', async function() {
             }
         });
         
-        // Sauvegarder la version actuelle avant de publier
-        const versionId = ADMIN_CONFIG.saveMapVersion(mapData, currentUser.id, currentUser.username);
+        // Sauvegarde automatique désactivée - pas besoin de stocker localement
+        // const versionId = ADMIN_CONFIG.saveMapVersion(mapData, currentUser.id, currentUser.username);
         
         // Publier via l'API Vercel
         try {
