@@ -286,14 +286,29 @@ function resetMeasure() {
     // Réactiver le dragging de la carte
     map.dragging.enable();
     
-    // Supprimer la ligne et les marqueurs
+    // Supprimer la ligne
     if (measureLine) {
         map.removeLayer(measureLine);
         measureLine = null;
     }
-    measureMarkers.forEach(m => map.removeLayer(m));
+    
+    // Supprimer tous les marqueurs du tableau
+    measureMarkers.forEach(m => {
+        if (map.hasLayer(m)) {
+            map.removeLayer(m);
+        }
+    });
     measureMarkers = [];
     measurePoints = [];
+    
+    // Sécurité supplémentaire : supprimer tous les circleMarkers verts qui pourraient rester
+    map.eachLayer((layer) => {
+        if (layer instanceof L.CircleMarker && 
+            layer.options.color === '#0f0' && 
+            layer.options.radius === 5) {
+            map.removeLayer(layer);
+        }
+    });
 }
 
 // Fonction pour réinitialiser les coordonnées
@@ -363,6 +378,18 @@ map.on('mousedown', (e) => {
         isDrawing = true;
         measurePoints = [e.latlng];
         
+        // Nettoyer les anciens marqueurs et lignes avant de commencer un nouveau tracé
+        if (measureLine) {
+            map.removeLayer(measureLine);
+            measureLine = null;
+        }
+        measureMarkers.forEach(m => {
+            if (map.hasLayer(m)) {
+                map.removeLayer(m);
+            }
+        });
+        measureMarkers = [];
+        
         // Ajouter le premier marqueur
         const pointMarker = L.circleMarker(e.latlng, {
             radius: 5,
@@ -371,10 +398,6 @@ map.on('mousedown', (e) => {
             fillOpacity: 1
         }).addTo(map);
         measureMarkers = [pointMarker];
-        
-        if (measureLine) {
-            map.removeLayer(measureLine);
-        }
     }
 });
 
