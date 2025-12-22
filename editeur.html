@@ -56,6 +56,30 @@
                 </button>
             </div>
             
+            <!-- Panneau de filtres -->
+            <div class="filters-container">
+                <button id="filtersToggleBtn" class="filters-toggle-btn" title="Filtres d'affichage">
+                    <span>🔍</span> Filtres
+                </button>
+                <div id="filtersPanel" class="filters-panel hidden">
+                    <h3>Afficher/Masquer</h3>
+                    <div class="filter-options">
+                        <label class="filter-option">
+                            <input type="checkbox" id="filterMilitaire" checked>
+                            <span>🎖️ Unités militaires</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" id="filterCivil" checked>
+                            <span>👥 Unités civiles</span>
+                        </label>
+                        <label class="filter-option">
+                            <input type="checkbox" id="filterInfra" checked>
+                            <span>🏗️ Infrastructures</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Bouton Menu Burger unique sur la carte -->
             <div class="burger-container">
                 <button id="burgerBtn" class="burger-btn" title="Ajouter des unités">

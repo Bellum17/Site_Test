@@ -93,6 +93,18 @@ const unitNames = {
     'reserve': 'Réserve d\'hommes'
 };
 
+// Catégories des unités (identique à editor-script.js)
+const unitCategories = {
+    'infanterie-motorisee': 'militaire',
+    'cavalerie': 'militaire',
+    'infanterie-legere': 'militaire',
+    'garde-royale': 'militaire',
+    'genie': 'militaire',
+    'cdfa': 'militaire',
+    'commandement': 'militaire',
+    'reserve': 'civil'
+};
+
 // Charger la carte publiée si elle existe
 async function loadPublishedMap() {
     let mapData = null;
@@ -150,6 +162,7 @@ async function loadPublishedMap() {
                     if (unitIcon) {
                         var marker = L.marker([unitData.latlng.lat, unitData.latlng.lng], {icon: unitIcon});
                         marker.bindPopup(`<b>${unitName}</b>`);
+                        marker.unitType = unitData.unitType; // Stocker le type pour le filtrage
                         unitsLayer.addLayer(marker);
                     }
                 }
@@ -163,3 +176,58 @@ unitsLayer.addTo(map);
 
 // Charger la carte publiée
 loadPublishedMap();
+
+// ===== SYSTÈME DE FILTRES =====
+const filtersToggleBtn = document.getElementById('filtersToggleBtn');
+const filtersPanel = document.getElementById('filtersPanel');
+const filterMilitaire = document.getElementById('filterMilitaire');
+const filterCivil = document.getElementById('filterCivil');
+const filterInfra = document.getElementById('filterInfra');
+
+// Toggle du panneau de filtres
+filtersToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    filtersPanel.classList.toggle('hidden');
+});
+
+// Fermer le panneau en cliquant en dehors
+document.addEventListener('click', (e) => {
+    if (!filtersPanel.classList.contains('hidden') && 
+        !filtersPanel.contains(e.target) && 
+        !filtersToggleBtn.contains(e.target)) {
+        filtersPanel.classList.add('hidden');
+    }
+});
+
+// Fonction pour appliquer les filtres
+function applyFilters() {
+    const showMilitaire = filterMilitaire.checked;
+    const showCivil = filterCivil.checked;
+    const showInfra = filterInfra.checked;
+    
+    unitsLayer.eachLayer((layer) => {
+        if (layer.unitType) {
+            const category = unitCategories[layer.unitType] || 'militaire';
+            
+            let shouldShow = false;
+            if (category === 'militaire' && showMilitaire) shouldShow = true;
+            if (category === 'civil' && showCivil) shouldShow = true;
+            if (category === 'infra' && showInfra) shouldShow = true;
+            
+            if (shouldShow) {
+                if (!map.hasLayer(layer)) {
+                    map.addLayer(layer);
+                }
+            } else {
+                if (map.hasLayer(layer)) {
+                    map.removeLayer(layer);
+                }
+            }
+        }
+    });
+}
+
+// Événements de changement sur les checkboxes
+filterMilitaire.addEventListener('change', applyFilters);
+filterCivil.addEventListener('change', applyFilters);
+filterInfra.addEventListener('change', applyFilters);
