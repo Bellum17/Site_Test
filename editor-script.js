@@ -167,7 +167,9 @@ unitTabs.forEach(tab => {
     });
 });
 
-// Fermer le menu en cliquant en dehors
+// Fermer le menu en cliquant en dehors - DÉSACTIVÉ pour garder le menu ouvert
+// Le menu se ferme seulement avec le bouton X ou Echap
+/*
 document.addEventListener('click', (e) => {
     if (!unitMenu.classList.contains('hidden') && 
         !unitMenu.contains(e.target) && 
@@ -175,6 +177,7 @@ document.addEventListener('click', (e) => {
         unitMenu.classList.add('hidden');
     }
 });
+*/
 
 // Sélection d'une unité
 unitItems.forEach(item => {
@@ -286,6 +289,11 @@ document.addEventListener('keydown', (e) => {
 // Annuler le mode placement avec Echap
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+        // Fermer le menu des unités si ouvert
+        if (!unitMenu.classList.contains('hidden')) {
+            unitMenu.classList.add('hidden');
+        }
+        
         if (placementMode) {
             placementMode = false;
             selectedUnit = null;
