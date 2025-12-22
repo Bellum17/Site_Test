@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "name": "kingdom-of-nile",
+  "version": "1.0.0",
+  "description": "Carte interactive du Royaume du Nil",
+  "private": true
+}
