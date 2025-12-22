@@ -805,7 +805,14 @@ publishBtn.addEventListener('click', async function() {
         try {
             this.innerHTML = '<span>⏳</span> Publication en cours...';
             
-            const response = await fetch('/api/publish', {
+            // Utiliser l'URL Vercel si configurée, sinon fallback local
+            const apiUrl = (typeof VERCEL_CONFIG !== 'undefined' && VERCEL_CONFIG.apiUrl) 
+                ? `${VERCEL_CONFIG.apiUrl}/api/publish`
+                : '/api/publish';
+            
+            console.log('📤 Publication vers:', apiUrl);
+            
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

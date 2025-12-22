@@ -98,8 +98,13 @@ async function loadPublishedMap() {
     
     // Charger depuis l'API Vercel en priorité
     try {
-        console.log('🔄 Chargement depuis API Vercel...');
-        const response = await fetch('/api/load');
+        // Utiliser l'URL Vercel si configurée, sinon fallback local
+        const apiUrl = (typeof VERCEL_CONFIG !== 'undefined' && VERCEL_CONFIG.apiUrl) 
+            ? `${VERCEL_CONFIG.apiUrl}/api/load`
+            : '/api/load';
+        
+        console.log('🔄 Chargement depuis:', apiUrl);
+        const response = await fetch(apiUrl);
         
         if (response.ok) {
             const result = await response.json();
