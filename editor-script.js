@@ -832,9 +832,10 @@ publishBtn.addEventListener('click', async function() {
         });
         
         // Sauvegarder la version actuelle avant de publier (via API Vercel)
+        let versionId = Date.now(); // ID par défaut
         try {
-            await ADMIN_CONFIG.saveMapVersion(mapData, currentUser.id, currentUser.username);
-            console.log('✅ Version sauvegardée dans le Gist');
+            versionId = await ADMIN_CONFIG.saveMapVersion(mapData, currentUser.id, currentUser.username);
+            console.log('✅ Version sauvegardée dans le Gist avec ID:', versionId);
         } catch (error) {
             console.error('❌ Erreur lors de la sauvegarde de la version:', error);
         }
@@ -876,7 +877,7 @@ publishBtn.addEventListener('click', async function() {
         }
         
         // Logger l'action
-        ADMIN_CONFIG.logAction(currentUser, 'publish_map', {
+        ADMIN_CONFIG.logAction(currentUser.id, currentUser.username, 'publish_map', {
             versionId: versionId,
             unitsCount: mapData.units.length
         });
