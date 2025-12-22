@@ -11,17 +11,17 @@ var map = L.map('maCarte', {
     center: [30.5, 31.2],
     zoom: 7,
     minZoom: 6,
-    maxZoom: 14,
+    maxZoom: 18,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0  // Empêche de sortir des limites
 }).setView([30.5, 31.2], 7);
 
 
 // --- 2. Ajout du fond de carte (Tiles) ---
-// Nous utilisons Wikimedia Maps
-L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '<a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia maps</a> | Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+// Nous utilisons OpenStreetMap France
+L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 
