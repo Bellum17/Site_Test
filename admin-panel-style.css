@@ -313,3 +313,120 @@
         justify-content: center;
     }
 }
+
+/* Popup de confirmation de suppression */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.popup-overlay.hidden {
+    display: none;
+}
+
+.popup-content {
+    background-color: #000;
+    border: 3px solid #f00;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+    animation: popupAppear 0.3s ease-out;
+}
+
+@keyframes popupAppear {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.popup-content h3 {
+    color: #f00;
+    font-size: 20px;
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.popup-content p {
+    color: #0f0;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.password-input {
+    width: 100%;
+    padding: 12px;
+    background-color: #000;
+    border: 2px solid #0f0;
+    color: #0f0;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: #f00;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.confirm-btn,
+.cancel-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.confirm-btn {
+    background-color: #f00;
+    color: #000;
+    border: 2px solid #f00;
+}
+
+.confirm-btn:hover {
+    background-color: #ff3333;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+}
+
+.cancel-btn {
+    background-color: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+}
+
+.cancel-btn:hover {
+    background-color: #0f0;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+}
+

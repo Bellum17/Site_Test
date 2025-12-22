@@ -35,14 +35,8 @@
         <a href="accueil" class="home-link" title="Retour à l'accueil">← Accueil</a>
         <h1>CARTOGRAPHIE DU ROYAUME DU NIL</h1>
         
-        <!-- Panel de connexion Discord et Mode sombre -->
+        <!-- Panel de connexion Discord -->
         <div class="header-controls">
-            <button id="themeToggleBtn" class="theme-toggle-btn" title="Changer le thème">
-                <span class="theme-icon">🌙</span>
-            </button>
-            <button id="deleteSavesBtn" class="delete-saves-btn-map" title="Supprimer les sauvegardes">
-                <span>🗑️</span>
-            </button>
             <div id="discordPanel" class="discord-panel-map">
                 <button id="loginBtn" class="discord-login-btn">
                     <span>🔐</span> Connexion Discord
@@ -59,21 +53,6 @@
     <main>
         <div id="maCarte"></div>
     </main>
-
-    <!-- Popup de confirmation de suppression -->
-    <div id="deleteConfirmPopup" class="delete-confirm-popup hidden">
-        <div class="popup-content">
-            <h2>⚠️ Confirmation de suppression</h2>
-            <p>Cette action va supprimer <strong>TOUTES</strong> les sauvegardes locales de la carte.</p>
-            <p>Pour confirmer, entrez le code de sécurité :</p>
-            <input type="text" id="deletePasswordInput" class="delete-password-input" placeholder="Code de sécurité" maxlength="6">
-            <div class="popup-buttons">
-                <button id="confirmDeleteBtn" class="popup-btn confirm-btn">Confirmer</button>
-                <button id="cancelDeleteBtn" class="popup-btn cancel-btn">Annuler</button>
-            </div>
-            <p class="password-hint">💡 Le code est nécessaire pour des raisons de sécurité</p>
-        </div>
-    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="

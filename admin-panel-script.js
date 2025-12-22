@@ -109,6 +109,7 @@ function loadVersions() {
                 <button class="version-btn" onclick="viewVersion(${version.id})">Voir</button>
                 <button class="version-btn restore" onclick="restoreVersion(${version.id})">Restaurer</button>
                 <button class="version-btn" onclick="downloadVersion(${version.id})">Télécharger</button>
+                <button class="version-btn danger" onclick="deleteSingleVersion(${version.id})">🗑️ Supprimer</button>
             </div>
         `;
         
@@ -250,6 +251,96 @@ document.getElementById('exportVersions').addEventListener('click', function() {
     loadLogs();
 });
 
+// ===== GESTION DE LA SUPPRESSION DES SAUVEGARDES =====
+const deletePopup = document.getElementById('deleteConfirmPopup');
+const deletePasswordInput = document.getElementById('deletePasswordInput');
+const confirmDeleteBtn = document.getElementById('confirmDelete');
+const cancelDeleteBtn = document.getElementById('cancelDelete');
+const deleteMessage = document.getElementById('deleteMessage');
+
+let deleteAction = null; // 'all' ou un ID de version
+
+// Bouton "Supprimer toutes les sauvegardes"
+document.getElementById('deleteAllSaves').addEventListener('click', () => {
+    deleteAction = 'all';
+    deleteMessage.textContent = '⚠️ Vous allez supprimer TOUTES les sauvegardes. Cette action est irréversible.';
+    deletePasswordInput.value = '';
+    deletePopup.classList.remove('hidden');
+    deletePasswordInput.focus();
+});
+
+// Fonction pour supprimer une version individuelle
+function deleteSingleVersion(versionId) {
+    deleteAction = versionId;
+    deleteMessage.textContent = `⚠️ Vous allez supprimer la version #${versionId}. Cette action est irréversible.`;
+    deletePasswordInput.value = '';
+    deletePopup.classList.remove('hidden');
+    deletePasswordInput.focus();
+}
+
+// Exposer globalement pour les boutons onclick
+window.deleteSingleVersion = deleteSingleVersion;
+
+// Bouton confirmer
+confirmDeleteBtn.addEventListener('click', () => {
+    const enteredPassword = deletePasswordInput.value;
+    
+    if (enteredPassword !== '240806') {
+        alert('❌ Code de sécurité incorrect');
+        deletePasswordInput.value = '';
+        deletePasswordInput.focus();
+        return;
+    }
+    
+    if (deleteAction === 'all') {
+        // Supprimer toutes les sauvegardes
+        const keys = Object.keys(localStorage);
+        const mapDataKeys = keys.filter(key => key.startsWith('mapData'));
+        
+        if (mapDataKeys.length === 0) {
+            alert('ℹ️ Aucune sauvegarde à supprimer');
+            deletePopup.classList.add('hidden');
+            return;
+        }
+        
+        mapDataKeys.forEach(key => localStorage.removeItem(key));
+        
+        alert(`✅ ${mapDataKeys.length} sauvegarde(s) supprimée(s) avec succès`);
+        ADMIN_CONFIG.logAction(currentUser.id, currentUser.username, 'delete_all_saves', { count: mapDataKeys.length });
+    } else {
+        // Supprimer une version spécifique
+        const key = `mapData_${deleteAction}`;
+        if (localStorage.getItem(key)) {
+            localStorage.removeItem(key);
+            alert(`✅ Version #${deleteAction} supprimée avec succès`);
+            ADMIN_CONFIG.logAction(currentUser.id, currentUser.username, 'delete_save', { versionId: deleteAction });
+        } else {
+            alert('❌ Version introuvable');
+        }
+    }
+    
+    deletePopup.classList.add('hidden');
+    deletePasswordInput.value = '';
+    loadVersions();
+    loadLogs();
+});
+
+// Bouton annuler
+cancelDeleteBtn.addEventListener('click', () => {
+    deletePopup.classList.add('hidden');
+    deletePasswordInput.value = '';
+    deleteAction = null;
+});
+
+// Fermer avec Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !deletePopup.classList.contains('hidden')) {
+        deletePopup.classList.add('hidden');
+        deletePasswordInput.value = '';
+        deleteAction = null;
+    }
+});
+
 // Charger les données au démarrage
 loadLogs();
 loadVersions();
@@ -259,3 +350,4 @@ setInterval(() => {
     loadLogs();
     loadVersions();
 }, 10000);
+
