@@ -182,3 +182,85 @@ unitsLayer.addTo(map);
 
 // Charger la carte publiée
 loadPublishedMap();
+
+// ===== SUPPRESSION DES SAUVEGARDES =====
+const deleteSavesBtn = document.getElementById('deleteSavesBtn');
+const deleteConfirmPopup = document.getElementById('deleteConfirmPopup');
+const deletePasswordInput = document.getElementById('deletePasswordInput');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+const DELETE_PASSWORD = '240806';
+
+// Ouvrir la popup de confirmation
+deleteSavesBtn.addEventListener('click', () => {
+    deleteConfirmPopup.classList.remove('hidden');
+    deletePasswordInput.value = '';
+    deletePasswordInput.focus();
+});
+
+// Annuler la suppression
+cancelDeleteBtn.addEventListener('click', () => {
+    deleteConfirmPopup.classList.add('hidden');
+    deletePasswordInput.value = '';
+});
+
+// Fermer la popup avec Échap
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !deleteConfirmPopup.classList.contains('hidden')) {
+        deleteConfirmPopup.classList.add('hidden');
+        deletePasswordInput.value = '';
+    }
+});
+
+// Valider avec Entrée dans le champ de mot de passe
+deletePasswordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        confirmDeleteBtn.click();
+    }
+});
+
+// Confirmer la suppression
+confirmDeleteBtn.addEventListener('click', () => {
+    const enteredPassword = deletePasswordInput.value;
+    
+    if (enteredPassword !== DELETE_PASSWORD) {
+        alert('❌ Code de sécurité incorrect !');
+        deletePasswordInput.value = '';
+        deletePasswordInput.focus();
+        return;
+    }
+    
+    // Supprimer toutes les sauvegardes
+    const keysToDelete = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('mapData')) {
+            keysToDelete.push(key);
+        }
+    }
+    
+    if (keysToDelete.length === 0) {
+        alert('ℹ️ Aucune sauvegarde à supprimer.');
+        deleteConfirmPopup.classList.add('hidden');
+        return;
+    }
+    
+    // Supprimer toutes les clés trouvées
+    keysToDelete.forEach(key => localStorage.removeItem(key));
+    
+    // Réinitialiser la carte
+    unitsLayer.clearLayers();
+    
+    // Fermer la popup
+    deleteConfirmPopup.classList.add('hidden');
+    deletePasswordInput.value = '';
+    
+    // Notification de succès
+    alert(`✅ ${keysToDelete.length} sauvegarde(s) supprimée(s) avec succès !\n\nLa carte a été réinitialisée.`);
+    
+    // Recharger la carte publiée
+    loadPublishedMap();
+    
+    console.log('🗑️ Sauvegardes supprimées:', keysToDelete);
+});
