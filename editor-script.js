@@ -761,7 +761,7 @@ document.getElementById('loadJson').addEventListener('change', function(e) {
 });
 
 // Publier sur la carte actuelle (Admin uniquement)
-publishBtn.addEventListener('click', function() {
+publishBtn.addEventListener('click', async function() {
     if (!currentUser || !ADMIN_CONFIG.isAdmin(currentUser.id)) {
         alert('Vous devez être administrateur pour publier la carte.');
         return;
@@ -776,8 +776,7 @@ publishBtn.addEventListener('click', function() {
     this.innerHTML = '<span>⏳</span> Publication en cours...';
     this.disabled = true;
     
-    // Utiliser un setTimeout pour permettre l'affichage de l'indicateur
-    setTimeout(() => {
+    try {
         // Collecter les données de la carte
         const mapData = {
             center: map.getCenter(),
@@ -802,13 +801,27 @@ publishBtn.addEventListener('click', function() {
         // Sauvegarder la version actuelle avant de publier
         const versionId = ADMIN_CONFIG.saveMapVersion(mapData, currentUser.id, currentUser.username);
         
-        // Publier (sauvegarder comme carte actuelle)
+        // Publier sur GitHub Gist (si configuré)
+        let gistResult = null;
+        if (typeof publishToGist !== 'undefined') {
+            try {
+                this.innerHTML = '<span>⏳</span> Publication sur GitHub...';
+                gistResult = await publishToGist(mapData);
+                console.log('✅ Publié sur Gist:', gistResult);
+            } catch (gistError) {
+                console.warn('⚠️ Erreur Gist (fallback sur localStorage):', gistError);
+                alert(`⚠️ Impossible de publier sur GitHub Gist.\n\n${gistError.message}\n\nLa carte est sauvegardée localement uniquement.\n\nVérifiez votre token GitHub dans gist-config.js`);
+            }
+        }
+        
+        // Publier également en local (fallback)
         localStorage.setItem('published_map', JSON.stringify(mapData));
         
         // Logger l'action
         ADMIN_CONFIG.logAction(currentUser, 'publish_map', {
             versionId: versionId,
-            unitsCount: mapData.units.length
+            unitsCount: mapData.units.length,
+            gistId: gistResult?.gistId || 'local-only'
         });
         
         // Restaurer le bouton
@@ -816,6 +829,24 @@ publishBtn.addEventListener('click', function() {
         btn.innerHTML = originalText;
         btn.disabled = false;
         
-        alert(`✅ Carte publiée avec succès !\n\nVersion sauvegardée avec l'ID: ${versionId}\nUnités: ${mapData.units.length}\n\n🔄 Rechargez la page "Carte Actuelle" pour voir les modifications.`);
-    }, 100);
+        // Message de succès
+        let successMessage = `✅ Carte publiée avec succès !\n\nVersion sauvegardée: ${versionId}\nUnités: ${mapData.units.length}`;
+        
+        if (gistResult) {
+            successMessage += `\n\n🌐 Publié sur GitHub Gist\nID: ${gistResult.gistId}\nURL: ${gistResult.url}`;
+        } else {
+            successMessage += `\n\n💾 Sauvegardée localement uniquement\n⚠️ Configurez GitHub Gist pour la partager`;
+        }
+        
+        successMessage += `\n\n🔄 Rechargez la page "Carte Actuelle" pour voir les modifications.`;
+        
+        alert(successMessage);
+        
+    } catch (error) {
+        console.error('❌ Erreur lors de la publication:', error);
+        const btn = document.getElementById('publishMap');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert(`❌ Erreur lors de la publication:\n\n${error.message}`);
+    }
 });

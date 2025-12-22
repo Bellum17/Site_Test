@@ -93,11 +93,37 @@ const unitNames = {
 };
 
 // Charger la carte publiée si elle existe
-const publishedMap = localStorage.getItem('published_map');
-if (publishedMap) {
-    try {
-        const mapData = JSON.parse(publishedMap);
-        
+async function loadPublishedMap() {
+    let mapData = null;
+    
+    // Essayer de charger depuis GitHub Gist d'abord
+    if (typeof loadFromGist !== 'undefined') {
+        try {
+            console.log('🔄 Chargement depuis GitHub Gist...');
+            mapData = await loadFromGist();
+            if (mapData) {
+                console.log('✅ Carte chargée depuis Gist');
+            }
+        } catch (error) {
+            console.warn('⚠️ Erreur Gist, tentative localStorage...', error);
+        }
+    }
+    
+    // Fallback sur localStorage si pas de Gist
+    if (!mapData) {
+        const publishedMap = localStorage.getItem('published_map');
+        if (publishedMap) {
+            try {
+                mapData = JSON.parse(publishedMap);
+                console.log('✅ Carte chargée depuis localStorage');
+            } catch (error) {
+                console.error('❌ Erreur lors du chargement localStorage:', error);
+            }
+        }
+    }
+    
+    // Charger la carte si des données sont disponibles
+    if (mapData) {
         // Restaurer la position de la carte
         if (mapData.center && mapData.zoom) {
             map.setView([mapData.center.lat, mapData.center.lng], mapData.zoom);
@@ -118,10 +144,11 @@ if (publishedMap) {
                 }
             });
         }
-    } catch (error) {
-        console.error('Erreur lors du chargement de la carte publiée:', error);
     }
 }
 
 // Ajouter les unités à la carte
 unitsLayer.addTo(map);
+
+// Charger la carte publiée
+loadPublishedMap();
